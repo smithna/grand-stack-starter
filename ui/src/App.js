@@ -95,7 +95,7 @@ class App extends Component {
     
       <div className='App'>
         <div className='App-header'>
-          <h2>Meetup Mixer</h2>
+          <h2 className='App-headline'>Meetup Mixer</h2>
         </div>
         <div id="wrapper">
           <div id="personToTopic">

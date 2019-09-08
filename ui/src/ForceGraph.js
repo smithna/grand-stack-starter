@@ -48,14 +48,14 @@ class ForceGraph extends Component {
     const circle = select(node).append("g")
         .selectAll(".force g")
         .data(nodes)
-        .join("g");
-    
+        .join("g")
+        .call(dragging(simulation));
+        
      circle.append("circle")
         .attr("r", 25)
         .attr("stroke", "#fff")
         .attr("stroke-width", 1.5)
-        .attr("fill", d => d.nodeLabel === "Person" ? "orange" : "lightblue")
-        .call(dragging(simulation));
+        .attr("fill", d => d.nodeLabel === "Person" ? "orange" : "lightblue");
 
     circle.append("title")
         .text(d => d.name);

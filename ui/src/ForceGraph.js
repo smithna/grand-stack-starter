@@ -36,17 +36,19 @@ class ForceGraph extends Component {
         .force("center", forceCenter(displaySize[0] / 2, displaySize[1] / 2));
 
     select(node).attr('class', 'force')
-  
-    const link = select(node).append("g")
-        .attr("stroke", "#999")
+    
+    const link = select(node).select(g.force-links) || select(node).append("g").attr('class', 'force-links') 
+
+    link.attr("stroke", "#999")
         .attr("stroke-opacity", 0.6)
-      .selectAll(".force line")
+      .selectAll(".force-links line")
       .data(links)
       .join("line")
         .attr("stroke-width", d => d.commonalityCount);
   
-    const circle = select(node).append("g")
-        .selectAll(".force g")
+    const circle = select(node).select("g.force-nodes") || select(node).append("g").attr('class', 'force-nodes')
+
+    circle.selectAll(".force-nodes g")
         .data(nodes)
         .join("g")
         .call(dragging(simulation));

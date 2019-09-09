@@ -100,13 +100,13 @@ class App extends Component {
         </div>
         <div id="wrapper">
           <div id="personToPerson">
-            <ForceGraph data={p2p_data} size={[360,500]} />
+            <ForceGraph data={p2p_data} size={[360,700]} />
           </div>
           <div id="personToTopic">
-            <BipartiteGraph data={final_data} size={[360,500]} orientation={"vertical"} />
+            <BipartiteGraph data={final_data} size={[360,700]} orientation={"vertical"} />
           </div>
           <div id="topicToTopic">
-            <ForceGraph data={t2t_data} size={[360,500]} />
+            <ForceGraph data={t2t_data} size={[360,700]} />
           </div>
         </div>
       </div>

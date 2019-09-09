@@ -36,23 +36,21 @@ class ForceGraph extends Component {
         .force("center", forceCenter(displaySize[0] / 2, displaySize[1] / 2));
 
     select(node).attr('class', 'force')
-    
-    const link = select(node).select(g.force-links) || select(node).append("g").attr('class', 'force-links') 
-
-    link.attr("stroke", "#999")
+  
+    const link = select(node).select("g.force-links")
+        .attr("stroke", "#999")
         .attr("stroke-opacity", 0.6)
-      .selectAll(".force-links line")
+      .selectAll(".force line")
       .data(links)
       .join("line")
         .attr("stroke-width", d => d.commonalityCount);
   
-    const circle = select(node).select("g.force-nodes") || select(node).append("g").attr('class', 'force-nodes')
-
-    circle.selectAll(".force-nodes g")
+    const circle = select(node).select("g.force-nodes")
+        .selectAll(".force g")
         .data(nodes)
         .join("g")
         .call(dragging(simulation));
-        
+            
      circle.append("circle")
         .attr("r", 25)
         .attr("stroke", "#fff")
@@ -120,7 +118,9 @@ class ForceGraph extends Component {
 
 render(){
     return <svg ref={node => this.node = node}
-    width = {this.props.size[0]} height={this.props.size[1]}>        
+    width = {this.props.size[0]} height={this.props.size[1]}>
+      <g class="force-links"></g>
+      <g class="force-nodes"></g>        
     </svg>
 } 
 }

@@ -30,7 +30,7 @@
 
 #personToTopic, #personToPerson, #topicToTopic {
   display: inline-block;
-  padding: 2%;
+  padding: 2px;
   font-size: smaller;
 }
 

@@ -98,14 +98,21 @@ class App extends Component {
         <div className='App-header'>
           <h2 className='App-headline'>Meetup Mixer</h2>
         </div>
+        <div id="instructions">
+          <p>Welcome to the Meetup. Let's network!</p>
+          <p>Ask Steve Petrie to add you and your interests to the graph.</p>
+          <p>Find someone with common interests and start a conversation.</p>
+        </div>
         <div id="wrapper">
           <div id="personToPerson">
+            <p>People with common interests</p>
             <ForceGraph data={p2p_data} size={[360,700]} />
           </div>
           <div id="personToTopic">
             <BipartiteGraph data={final_data} size={[360,700]} orientation={"vertical"} />
           </div>
           <div id="topicToTopic">
+            <p>Topics with common people</p>
             <ForceGraph data={t2t_data} size={[360,700]} />
           </div>
         </div>

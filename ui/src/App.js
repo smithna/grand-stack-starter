@@ -7,6 +7,7 @@ import ForceGraph from './ForceGraph';
 import { group, rollups } from 'd3-array';
 
 class App extends Component {
+
   render() {
     return (
     <Query

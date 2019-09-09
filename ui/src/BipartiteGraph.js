@@ -11,12 +11,8 @@ class BipartiteGraph extends Component {
 
     componentDidMount() {
         this.createBipartiteGraph()
-        this.interval = setInterval(() => this.setState({ time: Date.now() }), 30000);
       }
-      
-      componentWillUnmount() {
-        clearInterval(this.interval);
-      }
+    
 
     componentDidUpdate() {
         this.createBipartiteGraph()
@@ -47,31 +43,57 @@ class BipartiteGraph extends Component {
         const circle = select(node).select("g.bipartite-nodes")
             .selectAll(".bipartite g.circle")
             .data(nodes)
-            .join("g")
+            .join(circleEntered, circleUpdated);
+
+        function circleEntered(enter){
+            var circleGs = enter.append("g")
             .attr('class', 'circle');
 
-        circle.append("circle")
+
+            circleGs.append("circle")
             .attr("stroke", "#fff")
             .attr("stroke-width", 1.5)
             .attr("r", 10)
+            .attr("x", 0)
+            .attr("fill", d => d.nodeLabel === "Person" ? "orange" : "lightblue")
             .each(function(d, i){
                 if(orientation === "horizontal"){
                     d.fy = d.nodeLabel === "Person" ? displaySize[1]/3:displaySize[1]*2/3}
                 else{
                     d.fx = d.nodeLabel === "Person" ? displaySize[0]/3:displaySize[0]*2/3}
-            })
-            .attr("fill", d => d.nodeLabel === "Person" ? "orange" : "lightblue");
+            });
 
-        circle.append("title")
+            circleGs.append("title")
             .text(d => d.name)
             ;
 
-        circle.append("text")
+            circleGs.append("text")
             .text(d => d.name)
             .attr('x',  d => d.nodeLabel ==="Person"?-10:10)
             .attr('y',  3)
             .attr("writing-mode", d => orientation === "horizontal"? "tb": "lr")
             .attr("text-anchor", d => d.nodeLabel ==="Person"?"end":"start");
+
+            return circleGs;
+        }
+
+        
+        function circleUpdated(update){
+
+            select("circle")
+            .each(function(d, i){
+                if(orientation === "horizontal"){
+                    d.fy = d.nodeLabel === "Person" ? displaySize[1]/3:displaySize[1]*2/3}
+                else{
+                    d.fx = d.nodeLabel === "Person" ? displaySize[0]/3:displaySize[0]*2/3}
+            });
+            return update;
+        }
+
+
+
+
+
         
     
             simulation.on("tick", () => {

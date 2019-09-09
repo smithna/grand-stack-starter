@@ -119,8 +119,8 @@ class ForceGraph extends Component {
 render(){
     return <svg ref={node => this.node = node}
     width = {this.props.size[0]} height={this.props.size[1]}>
-      <g class="force-links"></g>
-      <g class="force-nodes"></g>        
+      <g className="force-links"></g>
+      <g className="force-nodes"></g>        
     </svg>
 } 
 }

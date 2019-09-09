@@ -36,7 +36,7 @@ class BipartiteGraph extends Component {
             .force("collide", forceCollide(15).iterations(16) )
             .force("center", forceCenter(this.props.size[0]/2, this.props.size[1]/2))
     
-        const link = select(node).append("g")
+        const link = select(node).select("g.bipartite-links")
             .attr("stroke", "#999")
             .attr("stroke-opacity", 0.6)
             .selectAll(".bipartite line")
@@ -44,7 +44,7 @@ class BipartiteGraph extends Component {
             .join("line")
             .attr("stroke", "black")
 
-        const circle = select(node).append("g")
+        const circle = select(node).select("g.bipartite-nodes")
             .selectAll(".bipartite g.circle")
             .data(nodes)
             .join("g")
@@ -90,7 +90,9 @@ class BipartiteGraph extends Component {
 
 render(){
     return <svg ref={node => this.node = node}
-    width = {this.props.size[0]} height={this.props.size[1]}>        
+    width = {this.props.size[0]} height={this.props.size[1]}>
+    <g className="bipartite-links"></g>
+    <g className="bipartite-nodes"></g>         
     </svg>
 } 
 }

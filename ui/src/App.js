@@ -7,6 +7,7 @@ import ForceGraph from './ForceGraph';
 import { group, rollups } from 'd3-array';
 
 class App extends Component {
+
   render() {
     return (
     <Query
@@ -95,17 +96,24 @@ class App extends Component {
     
       <div className='App'>
         <div className='App-header'>
-          <h2>Meetup Mixer</h2>
+          <h2 className='App-headline'>Meetup Mixer</h2>
+        </div>
+        <div id="instructions">
+          <p>Welcome to the Meetup. Let's network!</p>
+          <p>Ask Steve Petrie to add you and your interests to the graph.</p>
+          <p>Find someone with common interests and start a conversation.</p>
         </div>
         <div id="wrapper">
+          <div id="personToPerson">
+            <p>People with common interests</p>
+            <ForceGraph data={p2p_data} size={[360,700]} />
+          </div>
           <div id="personToTopic">
-            <BipartiteGraph data={final_data} size={[800,500]} orientation={"vertical"} />
+            <BipartiteGraph data={final_data} size={[360,700]} orientation={"vertical"} />
           </div>
           <div id="topicToTopic">
-            <ForceGraph data={t2t_data} size={[500,500]} />
-          </div>
-          <div id="personToPerson">
-            <ForceGraph data={p2p_data} size={[500,500]} />
+            <p>Topics with common people</p>
+            <ForceGraph data={t2t_data} size={[360,700]} />
           </div>
         </div>
       </div>

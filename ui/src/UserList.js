@@ -15,6 +15,11 @@ import {
   Typography,
   TextField
 } from "@material-ui/core";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 
 const styles = theme => ({
   root: {
@@ -36,15 +41,16 @@ const styles = theme => ({
 class UserList extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       order: "asc",
       orderBy: "name",
-      page: 0,
-      rowsPerPage: 10,
-      usernameFilter: ""
+      usernameFilter: "Choose a person"
     };
   }
+
+  handleChange = event => {
+    this.setState({ usernameFilter: event.target.value });
+  };
 
   handleSortRequest = property => {
     const orderBy = property;
@@ -57,21 +63,19 @@ class UserList extends React.Component {
     this.setState({ order, orderBy });
   };
 
-  getFilter = () => {
-    return this.state.usernameFilter.length > 0
-      ? { name_contains: this.state.usernameFilter }
-      : {};
-  };
-
-  handleFilterChange = filterName => event => {
-    const val = event.target.value;
-
-    this.setState({
-      [filterName]: val
-    });
-  };
-
   render() {
+    let links = this.props.data.links;
+    let reversed_links = links.map(n => {
+      let reversed = Object.assign({}, n);
+      reversed.source = n.target;
+      reversed.target = n.source;
+      return reversed;
+    });
+
+    let bidirectional_data = links.concat(reversed_links);
+
+    let sources = bidirectional_data.map(n => n.source);
+    sources = [...new Set(sources)].sort();
     const { order, orderBy } = this.state;
     const { classes } = this.props;
     return (
@@ -79,133 +83,57 @@ class UserList extends React.Component {
         <Typography variant="h2" gutterBottom>
           User List
         </Typography>
-        <TextField
-          id="search"
-          label="User Name Contains"
-          className={classes.textField}
+        <InputLabel htmlFor="person-selct">Person</InputLabel>
+        <Select
           value={this.state.usernameFilter}
-          onChange={this.handleFilterChange("usernameFilter")}
-          margin="normal"
-          variant="outlined"
-          type="text"
-          InputProps={{
-            className: classes.input
-          }}
-        />
-
-        <Query
-          query={gql`
-            query usersPaginateQuery(
-              $first: Int
-              $offset: Int
-              $orderBy: [_UserOrdering]
-              $filter: _UserFilter
-            ) {
-              User(
-                first: $first
-                offset: $offset
-                orderBy: $orderBy
-                filter: $filter
-              ) {
-                id
-                name
-                avgStars
-                numReviews
-              }
-            }
-          `}
-          variables={{
-            first: this.state.rowsPerPage,
-            offset: this.state.rowsPerPage * this.state.page,
-            orderBy: this.state.orderBy + "_" + this.state.order,
-            filter: this.getFilter()
+          onChange={this.handleChange}
+          inputProps={{
+            name: "source",
+            id: "person-select"
           }}
         >
-          {({ loading, error, data }) => {
-            if (loading) return <p>Loading...</p>;
-            if (error) return <p>Error</p>;
+          {sources.map(n => {
+            return <MenuItem value={n}>{n}</MenuItem>;
+          })}
+        </Select>
 
-            return (
-              <Table className={this.props.classes.table}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell
-                      key="name"
-                      sortDirection={orderBy === "name" ? order : false}
-                    >
-                      <Tooltip
-                        title="Sort"
-                        placement="bottom-start"
-                        enterDelay={300}
-                      >
-                        <TableSortLabel
-                          active={orderBy === "name"}
-                          direction={order}
-                          onClick={() => this.handleSortRequest("name")}
-                        >
-                          Name
-                        </TableSortLabel>
-                      </Tooltip>
+        <Table className={this.props.classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell key="target">Name</TableCell>
+              <TableCell key="commonalityCount" numeric>
+                Common Topic Count
+              </TableCell>
+              <TableCell key="commonalities">Common Topics</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {bidirectional_data
+              .filter(n => n.source === this.state.usernameFilter)
+              .sort((a, b) =>
+                a.commonalityCount < b.commonalityCount
+                  ? 1
+                  : a.commonalityCount === b.commonalityCount
+                  ? a.target > b.target
+                    ? 1
+                    : -1
+                  : -1
+              )
+              .map(n => {
+                return (
+                  <TableRow key={n.target}>
+                    <TableCell component="th" scope="row">
+                      {n.target}
                     </TableCell>
-                    <TableCell
-                      key="avgStars"
-                      sortDirection={orderBy === "avgStars" ? order : false}
-                      numeric
-                    >
-                      <Tooltip
-                        title="Sort"
-                        placement="bottom-end"
-                        enterDelay={300}
-                      >
-                        <TableSortLabel
-                          active={orderBy === "avgStars"}
-                          direction={order}
-                          onClick={() => this.handleSortRequest("avgStars")}
-                        >
-                          Average Stars
-                        </TableSortLabel>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell
-                      key="numReviews"
-                      sortDirection={orderBy === "numReviews" ? order : false}
-                      numeric
-                    >
-                      <Tooltip
-                        title="Sort"
-                        placement="bottom-start"
-                        enterDelay={300}
-                      >
-                        <TableSortLabel
-                          active={orderBy === "numReviews"}
-                          direction={order}
-                          onClick={() => this.handleSortRequest("numReviews")}
-                        >
-                          Number of Reviews
-                        </TableSortLabel>
-                      </Tooltip>
+                    <TableCell numeric>{n.commonalityCount}</TableCell>
+                    <TableCell component="th" scope="row">
+                      {n.commonalities}
                     </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data.User.map(n => {
-                    return (
-                      <TableRow key={n.id}>
-                        <TableCell component="th" scope="row">
-                          {n.name}
-                        </TableCell>
-                        <TableCell numeric>
-                          {n.avgStars ? n.avgStars.toFixed(2) : "-"}
-                        </TableCell>
-                        <TableCell numeric>{n.numReviews}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            );
-          }}
-        </Query>
+                );
+              })}
+          </TableBody>
+        </Table>
       </Paper>
     );
   }

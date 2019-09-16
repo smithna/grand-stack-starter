@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-import BipartiteGraph from "./BipartiteGraph";
-import ForceGraph from "./ForceGraph";
+import CommonTopicGraphs from "./CommonTopicGraphs";
 import UserList from "./UserList";
 import { group, rollups } from "d3-array";
 
@@ -60,7 +59,7 @@ class App extends Component {
             source: d.person,
             target: d.topic
           }));
-          var final_data = { nodes: node_data, links: link_data };
+          var bipartite_data = { nodes: node_data, links: link_data };
 
           function arrayJoin(
             lookupTable,
@@ -143,23 +142,11 @@ class App extends Component {
               <div className="App-header">
                 <h2 className="App-headline">Meetup Mixer</h2>
               </div>
-              <div id="wrapper">
-                <div id="personToPerson">
-                  <p>People with common interests</p>
-                  <ForceGraph data={p2p_data} size={[360, 700]} />
-                </div>
-                <div id="personToTopic">
-                  <BipartiteGraph
-                    data={final_data}
-                    size={[360, 700]}
-                    orientation={"vertical"}
-                  />
-                </div>
-                <div id="topicToTopic">
-                  <p>Topics with common people</p>
-                  <ForceGraph data={t2t_data} size={[360, 700]} />
-                </div>
-              </div>
+              <CommonTopicGraphs
+                p2p_data={p2p_data}
+                t2t_data={t2t_data}
+                bipartite_data={bipartite_data}
+              />
               <div id="individual-report">
                 <UserList data={p2p_data} />
               </div>

@@ -1,6 +1,4 @@
 import React from "react";
-import { Query } from "react-apollo";
-import gql from "graphql-tag";
 import "./UserList.css";
 import { withStyles } from "@material-ui/core/styles";
 import {
@@ -9,17 +7,16 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Tooltip,
   Paper,
-  TableSortLabel,
-  Typography,
-  TextField
+  Typography
 } from "@material-ui/core";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import Button from "@material-ui/core/Button";
 
 const styles = theme => ({
   root: {
@@ -35,6 +32,17 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
     minWidth: 300
+  },
+
+  code: {
+    align: "left"
+  },
+
+  title: {
+    fontSize: 14
+  },
+  pos: {
+    marginBottom: 12
   }
 });
 
@@ -134,6 +142,26 @@ class UserList extends React.Component {
               })}
           </TableBody>
         </Table>
+
+        <div>
+          <Typography
+            className={classes.title}
+            color="textSecondary"
+            gutterBottom
+          >
+            You could run this Cypher query in Neo4j Browser to return these
+            results.
+          </Typography>
+          <Typography className={classes.code} variant="body2" component="p">
+            {
+              "MATCH (p1:Person)-[:INTERESTED_IN]->(t:Topic)<-[:INTERESTED_IN]-(p2:Person)"
+            }
+            <br />
+            WHERE p1.name = "{this.state.usernameFilter}"<br />
+            RETURN p2.name AS Person, count(t) AS `Common Topic Count`,
+            collect(t.name) AS `Common Topics`;
+          </Typography>
+        </div>
       </Paper>
     );
   }

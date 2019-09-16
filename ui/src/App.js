@@ -290,7 +290,7 @@ class App extends Component {
                       noWrap
                       className={classes.title}
                     >
-                      Welcome To GRANDstack
+                      Meetup Mixer
                     </Typography>
                   </Toolbar>
                 </AppBar>

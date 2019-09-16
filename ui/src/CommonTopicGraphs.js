@@ -17,11 +17,7 @@ class CommonTopicGraphs extends Component {
     this.createCommonTopicsGraphs();
   }
 
-  createCommonTopicsGraphs() {
-    const p2p_data = this.props.p2p_data;
-    const t2t_data = this.props.t2t_data;
-    const bipartite_data = this.props.bipartite_data;
-  }
+  createCommonTopicsGraphs() {}
 
   render() {
     return (

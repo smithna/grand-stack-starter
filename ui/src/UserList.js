@@ -13,10 +13,6 @@ import {
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 
 const styles = theme => ({
   root: {
@@ -50,25 +46,12 @@ class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      order: "asc",
-      orderBy: "name",
-      usernameFilter: "Choose a person"
+      usernameFilter: this.props.data.nodes.map(n => n.name).sort()[0]
     };
   }
 
   handleChange = event => {
     this.setState({ usernameFilter: event.target.value });
-  };
-
-  handleSortRequest = property => {
-    const orderBy = property;
-    let order = "desc";
-
-    if (this.state.orderBy === property && this.state.order === "desc") {
-      order = "asc";
-    }
-
-    this.setState({ order, orderBy });
   };
 
   render() {
@@ -81,10 +64,8 @@ class UserList extends React.Component {
     });
 
     let bidirectional_data = links.concat(reversed_links);
+    let people = this.props.data.nodes.map(n => n.name).sort();
 
-    let sources = bidirectional_data.map(n => n.source);
-    sources = [...new Set(sources)].sort();
-    const { order, orderBy } = this.state;
     const { classes } = this.props;
     return (
       <Paper className={classes.root}>
@@ -100,7 +81,7 @@ class UserList extends React.Component {
             id: "person-select"
           }}
         >
-          {sources.map(n => {
+          {people.map(n => {
             return <MenuItem value={n}>{n}</MenuItem>;
           })}
         </Select>
@@ -152,7 +133,7 @@ class UserList extends React.Component {
             You could run this Cypher query in Neo4j Browser to return these
             results.
           </Typography>
-          <Typography className={classes.code} variant="body2" component="p">
+          <Typography className={classes.code} component="p">
             {
               "MATCH (p1:Person)-[:INTERESTED_IN]->(t:Topic)<-[:INTERESTED_IN]-(p2:Person)"
             }

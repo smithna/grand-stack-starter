@@ -25,27 +25,33 @@ class BipartiteGraph extends Component {
 
   createBipartiteGraph() {
     const node = this.node;
-    const links = this.props.data.links.map(d => Object.create(d));
+    let linkData = this.props.data.links;
+    const links = linkData.map(d => Object.create(d));
     const nodes = this.props.data.nodes.map(d => Object.create(d));
     const orientation = this.props.orientation;
     const displaySize = this.props.size;
 
-    const linkedByIndex = {};
+    function createLinkedByIndex(links) {
+      let linkedByIndex = {};
 
-    links.forEach(d => {
-      linkedByIndex[[d.source, d.target]] = 1;
-      links.forEach(i => {
-        if (i.target === d.target) {
-          linkedByIndex[[d.source, i.source]] = 1;
-        }
+      links.forEach(d => {
+        linkedByIndex[[d.source, d.target]] = 1;
+        links.forEach(i => {
+          if (i.target === d.target) {
+            linkedByIndex[[d.source, i.source]] = 1;
+          }
+        });
       });
-    });
-    console.log(linkedByIndex);
 
-    function isConnected(a, b) {
+      return linkedByIndex;
+    }
+
+    let linkedByIndex = createLinkedByIndex(linkData);
+
+    function isConnected(a, b, links) {
       return (
-        linkedByIndex[`${a.name},${b.name}`] ||
-        linkedByIndex[`${b.name},${a.name}`] ||
+        links[`${a.name},${b.name}`] ||
+        links[`${b.name},${a.name}`] ||
         a.name === b.name
       );
     }
@@ -62,18 +68,16 @@ class BipartiteGraph extends Component {
 
     const link = select(node)
       .select("g.bipartite-links")
-      .attr("stroke", "#999")
-      .attr("stroke-opacity", 0.6)
       .selectAll(".bipartite line")
       .data(links)
       .join("line")
-      .attr("stroke", "black");
-
+      .attr("stroke", "black")
+      .attr("stroke-opacity", 0.6);
     const circle = select(node)
       .select("g.bipartite-nodes")
       .selectAll(".bipartite g.circle")
       .data(nodes)
-      .join(circleEntered, circleUpdated);
+      .join(circleEntered, circleUpdated, circleExit);
 
     function circleEntered(enter) {
       var circleGs = enter.append("g").attr("class", "circle");
@@ -92,25 +96,8 @@ class BipartiteGraph extends Component {
                 ? displaySize[1] / 3
                 : (displaySize[1] * 2) / 3)
         )
-        .on("mouseover", function(d) {
-          selectAll(".bipartite circle")
-            .filter(n => isConnected(d, n))
-            .transition()
-            .duration("500")
-            .attr("stroke", "#000")
-            .attr("stroke-width", 2.5)
-            .attr("r", 12);
-        })
-        .on("mouseout", function(d) {
-          selectAll(".bipartite circle")
-            .transition()
-            .duration("500")
-            .attr("stroke", "#fff")
-            .attr("stroke-width", 1.5)
-            .attr("r", 10);
-        });
-
-      circleGs.append("title").text(d => d.name);
+        .on("mouseover", highlightLinkedCircles)
+        .on("mouseout", unhighlightLinkedCircles);
 
       circleGs
         .append("text")
@@ -123,10 +110,38 @@ class BipartiteGraph extends Component {
       return circleGs;
     }
 
+    function highlightLinkedCircles(d) {
+      linkedByIndex = createLinkedByIndex(linkData);
+      selectAll(".bipartite circle")
+        .filter(n => isConnected(d, n, linkedByIndex))
+        .transition()
+        .duration("500")
+        .attr("stroke", "#000")
+        .attr("stroke-width", 2.5)
+        .attr("r", 12);
+    }
+
+    function unhighlightLinkedCircles(d) {
+      selectAll(".bipartite circle")
+        .transition()
+        .duration("500")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1.5)
+        .attr("r", 10);
+    }
+
     function circleUpdated(update) {
-      console.log("called update");
-      console.log(update);
+      update
+        .on("mouseover", highlightLinkedCircles)
+        .on("mouseout", unhighlightLinkedCircles);
       return update;
+    }
+
+    function circleExit(exit) {
+      exit
+        .on("mouseover", highlightLinkedCircles)
+        .on("mouseout", unhighlightLinkedCircles);
+      return exit;
     }
 
     simulation.on("tick", () => {

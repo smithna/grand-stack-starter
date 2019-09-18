@@ -13,25 +13,39 @@ import {
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
+import { FileCopy as CopyIcon } from "@material-ui/icons";
+import CopyToClipboard from "./CopyToClipboard.js";
 
 const styles = theme => ({
+  spacing: 8,
+
   root: {
     maxWidth: 700,
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     overflowX: "auto",
-    margin: "auto"
+    margin: "auto",
+    padding: "15px"
   },
   table: {
-    minWidth: 700
+    minWidth: 670
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
     minWidth: 300
   },
 
   code: {
-    align: "left"
+    align: "right",
+    fontSize: 12,
+    backgroundColor: "#efefef",
+    paddingLeft: theme.spacing(2.5),
+    padding: theme.spacing(1.5)
+  },
+
+  tutorial: {
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(1)
   },
 
   title: {
@@ -69,10 +83,10 @@ class UserList extends React.Component {
     const { classes } = this.props;
     return (
       <Paper className={classes.root}>
-        <Typography variant="h2" gutterBottom>
-          User List
+        <Typography component="h2" variant="h5" gutterBottom>
+          Start a conversation!
         </Typography>
-        <InputLabel htmlFor="person-selct">Person</InputLabel>
+        <InputLabel htmlFor="person-selct">My name</InputLabel>
         <Select
           value={this.state.usernameFilter}
           onChange={this.handleChange}
@@ -124,24 +138,31 @@ class UserList extends React.Component {
           </TableBody>
         </Table>
 
-        <div>
+        <div className={classes.tutorial}>
           <Typography
             className={classes.title}
             color="textSecondary"
+            component="p"
             gutterBottom
           >
-            You could run this Cypher query in Neo4j Browser to return these
-            results.
+            To return the results above in Neo4j Browser, run this Cypher query:
           </Typography>
-          <Typography className={classes.code} component="p">
+          <Typography component="p" className={classes.code}>
             {
               "MATCH (p1:Person)-[:INTERESTED_IN]->(t:Topic)<-[:INTERESTED_IN]-(p2:Person)"
             }
             <br />
             WHERE p1.name = "{this.state.usernameFilter}"<br />
-            RETURN p2.name AS Person, count(t) AS `Common Topic Count`,
-            collect(t.name) AS `Common Topics`;
+            RETURN p2.name AS Person, <br />
+            count(t) AS `Common Topic Count`,
+            <br />
+            collect(t.name) AS `Common Topics`
+            <br />
+            ORDER BY count(t) DESC;
           </Typography>
+          <CopyToClipboard>
+            {({ copy }) => <CopyIcon onClick={() => copy("Cypher Query")} />}
+          </CopyToClipboard>
         </div>
       </Paper>
     );

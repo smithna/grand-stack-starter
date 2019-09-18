@@ -20,7 +20,6 @@ import {
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
   Dashboard as DashboardIcon,
-  EventNote as EventNoteIcon,
   People as PeopleIcon
 } from "@material-ui/icons";
 
@@ -286,7 +285,7 @@ class App extends Component {
                     </IconButton>
                     <Typography
                       component="h1"
-                      variant="title"
+                      variant="h3"
                       color="inherit"
                       noWrap
                       className={classes.title}

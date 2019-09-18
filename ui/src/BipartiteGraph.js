@@ -85,19 +85,13 @@ class BipartiteGraph extends Component {
         .attr("r", 10)
         .attr("x", 0)
         .attr("fill", d => (d.nodeLabel === "Person" ? "orange" : "lightblue"))
-        .each(function(d, i) {
-          if (orientation === "horizontal") {
-            d.fy =
+        .each(
+          d =>
+            (d.fx =
               d.nodeLabel === "Person"
                 ? displaySize[1] / 3
-                : (displaySize[1] * 2) / 3;
-          } else {
-            d.fx =
-              d.nodeLabel === "Person"
-                ? displaySize[0] / 3
-                : (displaySize[0] * 2) / 3;
-          }
-        })
+                : (displaySize[1] * 2) / 3)
+        )
         .on("mouseover", function(d) {
           selectAll(".bipartite circle")
             .filter(n => isConnected(d, n))
@@ -130,19 +124,8 @@ class BipartiteGraph extends Component {
     }
 
     function circleUpdated(update) {
-      select(this).each(function(d, i) {
-        if (orientation === "horizontal") {
-          d.fy =
-            d.nodeLabel === "Person"
-              ? displaySize[1] / 3
-              : (displaySize[1] * 2) / 3;
-        } else {
-          d.fx =
-            d.nodeLabel === "Person"
-              ? displaySize[0] / 3
-              : (displaySize[0] * 2) / 3;
-        }
-      });
+      console.log("called update");
+      console.log(update);
       return update;
     }
 
@@ -153,7 +136,15 @@ class BipartiteGraph extends Component {
         .attr("x2", d => d.target.x)
         .attr("y2", d => d.target.y);
 
-      circle.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
+      circle
+        .each(
+          d =>
+            (d.fx =
+              d.nodeLabel === "Person"
+                ? displaySize[0] / 3
+                : (displaySize[0] * 2) / 3)
+        )
+        .attr("transform", d => "translate(" + d.x + "," + d.y + ")");
     });
   }
 

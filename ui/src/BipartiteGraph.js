@@ -80,7 +80,7 @@ class BipartiteGraph extends Component {
       .join(circleEntered, circleUpdated, circleExit);
 
     function circleEntered(enter) {
-      var circleGs = enter.append("g").attr("class", "circle");
+      let circleGs = enter.append("g").attr("class", "circle");
 
       circleGs
         .append("circle")
@@ -110,6 +110,20 @@ class BipartiteGraph extends Component {
       return circleGs;
     }
 
+    function circleUpdated(update) {
+      update
+        .on("mouseover", highlightLinkedCircles)
+        .on("mouseout", unhighlightLinkedCircles);
+      return update;
+    }
+
+    function circleExit(exit) {
+      exit
+        .on("mouseover", highlightLinkedCircles)
+        .on("mouseout", unhighlightLinkedCircles);
+      return exit;
+    }
+
     function highlightLinkedCircles(d) {
       linkedByIndex = createLinkedByIndex(linkData);
       selectAll(".bipartite circle")
@@ -128,20 +142,6 @@ class BipartiteGraph extends Component {
         .attr("stroke", "#fff")
         .attr("stroke-width", 1.5)
         .attr("r", 10);
-    }
-
-    function circleUpdated(update) {
-      update
-        .on("mouseover", highlightLinkedCircles)
-        .on("mouseout", unhighlightLinkedCircles);
-      return update;
-    }
-
-    function circleExit(exit) {
-      exit
-        .on("mouseover", highlightLinkedCircles)
-        .on("mouseout", unhighlightLinkedCircles);
-      return exit;
     }
 
     simulation.on("tick", () => {

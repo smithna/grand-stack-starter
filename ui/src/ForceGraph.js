@@ -8,7 +8,7 @@ import {
   forceY,
   forceManyBody
 } from "d3-force";
-import { select, event } from "d3-selection";
+import { select, selectAll, event } from "d3-selection";
 import { drag } from "d3-drag";
 
 class ForceGraph extends Component {
@@ -29,7 +29,8 @@ class ForceGraph extends Component {
 
   createForceGraph() {
     const node = this.node;
-    const links = this.props.data.links.map(d => Object.create(d));
+    let linkData = this.props.data.links;
+    const links = linkData.map(d => Object.create(d));
     const nodes = this.props.data.nodes.map(d => Object.create(d));
     const displaySize = this.props.size;
     const simulation = forceSimulation(nodes)
@@ -43,6 +44,24 @@ class ForceGraph extends Component {
       .force("collide", forceCollide(32).iterations(16))
       .force("X", forceX(displaySize[0] / 2).strength(0.45))
       .force("Y", forceY(displaySize[1] / 2).strength(0.15));
+
+    function createLinkedByIndex(links) {
+      let linkedByIndex = {};
+      links.forEach(d => {
+        linkedByIndex[[d.source, d.target]] = 1;
+      });
+      return linkedByIndex;
+    }
+
+    let linkedByIndex = createLinkedByIndex(linkData);
+
+    function isConnected(a, b, links) {
+      return (
+        links[`${a.name},${b.name}`] ||
+        links[`${b.name},${a.name}`] ||
+        a.name === b.name
+      );
+    }
 
     select(node).attr("class", "force");
 
@@ -59,33 +78,10 @@ class ForceGraph extends Component {
       .select("g.force-nodes")
       .selectAll(".force g")
       .data(nodes)
-      .join("g")
+      .join(circleEntered, circleUpdated, circleExit)
+      .on("mouseover", highlightLinkedCircles)
+      .on("mouseout", unhighlightLinkedCircles)
       .call(dragging(simulation));
-
-    circle
-      .append("circle")
-      .attr("r", 25)
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 1.5)
-      .attr("fill", d => (d.nodeLabel === "Person" ? "orange" : "lightblue"));
-
-    circle.append("title").text(d => d.name);
-
-    var text = circle
-      .append("text")
-      .attr("y", d => (d.name.match(/\s/g) || []).length * -7.5 - 10);
-
-    text
-      .selectAll("tespan.text")
-      .data(d => d.name.split(" "))
-      .enter()
-      .append("tspan")
-      .attr("class", "text")
-      .text(d => d)
-      .attr("dy", 16)
-      .attr("x", 0)
-      .attr("dx", 0)
-      .attr("text-anchor", "middle");
 
     simulation.on("tick", () => {
       link
@@ -96,6 +92,69 @@ class ForceGraph extends Component {
 
       circle.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
     });
+
+    function circleEntered(enter) {
+      let circleGs = enter.append("g").attr("class", "circle");
+
+      circleGs
+        .append("circle")
+        .attr("r", 25)
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1.5)
+        .attr("fill", d => (d.nodeLabel === "Person" ? "orange" : "lightblue"));
+
+      var text = circleGs
+        .append("text")
+        .attr("y", d => (d.name.match(/\s/g) || []).length * -7.5 - 10);
+
+      text
+        .selectAll("tespan.text")
+        .data(d => d.name.split(" "))
+        .enter()
+        .append("tspan")
+        .attr("class", "text")
+        .text(d => d)
+        .attr("dy", 16)
+        .attr("x", 0)
+        .attr("dx", 0)
+        .attr("text-anchor", "middle");
+
+      return circleGs;
+    }
+
+    function circleUpdated(update) {
+      update
+        .on("mouseover", highlightLinkedCircles)
+        .on("mouseout", unhighlightLinkedCircles);
+      return update;
+    }
+
+    function circleExit(exit) {
+      exit
+        .on("mouseover", highlightLinkedCircles)
+        .on("mouseout", unhighlightLinkedCircles);
+      return exit;
+    }
+
+    function highlightLinkedCircles(d) {
+      linkedByIndex = createLinkedByIndex(linkData);
+      selectAll(".force circle")
+        .filter(n => isConnected(d, n, linkedByIndex))
+        .transition()
+        .duration("500")
+        .attr("stroke", "#000")
+        .attr("stroke-width", 2.5)
+        .attr("r", 27);
+    }
+
+    function unhighlightLinkedCircles(d) {
+      selectAll(".force circle")
+        .transition()
+        .duration("500")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1.5)
+        .attr("r", 25);
+    }
 
     function dragging(simulation) {
       function dragstarted(d) {

@@ -19,6 +19,8 @@ import CopyToClipboard from "./CopyToClipboard.js";
 const styles = theme => ({
   spacing: 8,
 
+  Select: base => ({ ...base, color: "green" }),
+
   root: {
     maxWidth: 700,
     marginTop: theme.spacing(3),
@@ -36,7 +38,7 @@ const styles = theme => ({
   },
 
   code: {
-    align: "right",
+    textAlign: "left",
     fontSize: 12,
     backgroundColor: "#efefef",
     paddingLeft: theme.spacing(2.5),
@@ -53,6 +55,39 @@ const styles = theme => ({
   },
   pos: {
     marginBottom: 12
+  },
+  nameTag: {
+    backgroundColor: "red",
+    borderColor: "red",
+    textAlign: "center",
+    borderRadius: 16,
+    color: "white",
+    paddingBottom: 24,
+    paddingTop: 12,
+    paddingLeft: 1,
+    paddingRight: 1,
+    maxWidth: 302,
+    marginLeft: "auto",
+    marginRight: "auto",
+    "& h3": {
+      margin: 0,
+      fontSize: 24
+    },
+    "& label": {
+      paddingBottom: 5,
+      color: "white"
+    }
+  },
+
+  nameTagBody: {
+    backgroundColor: "white",
+    marginLeft: "auto",
+    marginRight: "auto",
+    padding: 36
+  },
+
+  nameTagLabel: {
+    color: "white"
   }
 });
 
@@ -80,63 +115,64 @@ class UserList extends React.Component {
     let bidirectional_data = links.concat(reversed_links);
     let people = this.props.data.nodes.map(n => n.name).sort();
 
+    function formatTopics(topicList) {
+      let tokens = topicList.split(", ");
+      if (tokens.length == 1) return topicList;
+      else {
+        let finalToken = tokens.slice(-1);
+        return tokens.slice(0, -1).join(", ") + ", or " + finalToken;
+      }
+    }
+
     const { classes } = this.props;
     return (
       <Paper className={classes.root}>
-        <Typography component="h2" variant="h5" gutterBottom>
-          Start a conversation!
-        </Typography>
-        <InputLabel htmlFor="person-selct">My name</InputLabel>
-        <Select
-          value={this.state.usernameFilter}
-          onChange={this.handleChange}
-          inputProps={{
-            name: "source",
-            id: "person-select"
-          }}
-        >
-          {people.map(n => {
-            return <MenuItem value={n}>{n}</MenuItem>;
-          })}
-        </Select>
-
-        <Table className={this.props.classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell key="target">Name</TableCell>
-              <TableCell key="commonalityCount" numeric>
-                Common Topic Count
-              </TableCell>
-              <TableCell key="commonalities">Common Topics</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {bidirectional_data
-              .filter(n => n.source === this.state.usernameFilter)
-              .sort((a, b) =>
-                a.commonalityCount < b.commonalityCount
-                  ? 1
-                  : a.commonalityCount === b.commonalityCount
-                  ? a.target > b.target
-                    ? 1
-                    : -1
-                  : -1
-              )
-              .map(n => {
-                return (
-                  <TableRow key={n.target}>
-                    <TableCell component="th" scope="row">
-                      {n.target}
-                    </TableCell>
-                    <TableCell numeric>{n.commonalityCount}</TableCell>
-                    <TableCell component="th" scope="row">
-                      {n.commonalities}
-                    </TableCell>
-                  </TableRow>
-                );
+        <div className={classes.nameTag}>
+          <h3>HELLO</h3>
+          <InputLabel htmlFor="person-selct" classes={{ root: "nameTagLabel" }}>
+            My name is
+          </InputLabel>
+          <div className={classes.nameTagBody}>
+            <Select
+              value={this.state.usernameFilter}
+              onChange={this.handleChange}
+              style={{ fontFamily: "Permanent Marker", fontSize: 24 }}
+              inputProps={{
+                name: "source",
+                id: "person-select"
+              }}
+            >
+              {people.map(n => {
+                return <MenuItem value={n}>{n}</MenuItem>;
               })}
-          </TableBody>
-        </Table>
+            </Select>
+          </div>
+        </div>
+        <p>
+          Welcome to the Meetup {this.state.usernameFilter.split(" ")[0]}. Let's
+          get networking!
+        </p>
+        <ul>
+          {bidirectional_data
+            .filter(n => n.source === this.state.usernameFilter)
+            .sort((a, b) =>
+              a.commonalityCount < b.commonalityCount
+                ? 1
+                : a.commonalityCount === b.commonalityCount
+                ? a.target > b.target
+                  ? 1
+                  : -1
+                : -1
+            )
+            .map(n => {
+              return (
+                <li key={n.target}>
+                  Start a conversation with {n.target} about{" "}
+                  {formatTopics(n.commonalities)}
+                </li>
+              );
+            })}
+        </ul>
 
         <div className={classes.tutorial}>
           <Typography
@@ -161,7 +197,7 @@ class UserList extends React.Component {
             ORDER BY count(t) DESC;
           </Typography>
           <CopyToClipboard>
-            {({ copy }) => <CopyIcon onClick={() => copy("Cypher Query")} />}
+            {({ copy }) => <CopyIcon onClick={() => copy("test")} />}
           </CopyToClipboard>
         </div>
       </Paper>

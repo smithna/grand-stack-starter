@@ -19,8 +19,9 @@ import {
 import {
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
-  Dashboard as DashboardIcon,
-  People as PeopleIcon
+  ScatterPlot as DashboardIcon,
+  EmojiPeople as PeopleIcon,
+  AddCircleOutline as AddIcon
 } from "@material-ui/icons";
 
 import { Query } from "react-apollo";
@@ -319,9 +320,17 @@ class App extends Component {
                         <ListItemIcon>
                           <DashboardIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Home" />
+                        <ListItemText primary="View Community" />
                       </ListItem>
-
+                      <ListItem
+                        button
+                        onClick={() => this.setSelectedView("NewInterest")}
+                      >
+                        <ListItemIcon>
+                          <AddIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Add Interests" />
+                      </ListItem>
                       <ListItem
                         button
                         onClick={() => this.setSelectedView("Users")}
@@ -329,7 +338,7 @@ class App extends Component {
                         <ListItemIcon>
                           <PeopleIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Users" />
+                        <ListItemText primary="Find Friends" />
                       </ListItem>
                     </div>
                   </List>

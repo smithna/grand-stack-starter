@@ -1,6 +1,6 @@
 import React from "react";
 import "./UserList.css";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles, rgbToHex } from "@material-ui/core/styles";
 import {
   Table,
   TableBody,
@@ -39,10 +39,17 @@ const styles = theme => ({
 
   code: {
     textAlign: "left",
-    fontSize: 12,
+    fontSize: 14,
     backgroundColor: "#efefef",
     paddingLeft: theme.spacing(2.5),
-    padding: theme.spacing(1.5)
+    padding: theme.spacing(1.5),
+    overflow: "hidden",
+    whiteSpace: "pre-line",
+    "& svg": {
+      color: "#999",
+      alignItems: "right",
+      float: "right"
+    }
   },
 
   tutorial: {
@@ -69,12 +76,13 @@ const styles = theme => ({
     maxWidth: 302,
     marginLeft: "auto",
     marginRight: "auto",
+    marginBottom: 32,
     "& h3": {
       margin: 0,
       fontSize: 24
     },
     "& label": {
-      paddingBottom: 5,
+      paddingBottom: 10,
       color: "white"
     }
   },
@@ -125,6 +133,12 @@ class UserList extends React.Component {
     }
 
     const { classes } = this.props;
+    let cypherString = `MATCH (p1:Person)-[:INTERESTED_IN]->(t:Topic)<-[:INTERESTED_IN]-(p2:Person)
+WHERE p1.name = "${this.state.usernameFilter}"
+RETURN p2.name AS Person,
+count(t) AS \`Common Topic Count\`,
+collect(t.name) AS \`Common Topics\`
+ORDER BY count(t) DESC;`;
     return (
       <Paper className={classes.root}>
         <div className={classes.nameTag}>
@@ -149,8 +163,8 @@ class UserList extends React.Component {
           </div>
         </div>
         <p>
-          Welcome to the Meetup {this.state.usernameFilter.split(" ")[0]}. Let's
-          get networking!
+          Welcome to the Meetup, {this.state.usernameFilter.split(" ")[0]}.
+          Let's get networking!
         </p>
         <ul>
           {bidirectional_data
@@ -168,7 +182,7 @@ class UserList extends React.Component {
               return (
                 <li key={n.target}>
                   Start a conversation with {n.target} about{" "}
-                  {formatTopics(n.commonalities)}
+                  {formatTopics(n.commonalities)}.
                 </li>
               );
             })}
@@ -183,22 +197,14 @@ class UserList extends React.Component {
           >
             To return the results above in Neo4j Browser, run this Cypher query:
           </Typography>
-          <Typography component="p" className={classes.code}>
-            {
-              "MATCH (p1:Person)-[:INTERESTED_IN]->(t:Topic)<-[:INTERESTED_IN]-(p2:Person)"
-            }
-            <br />
-            WHERE p1.name = "{this.state.usernameFilter}"<br />
-            RETURN p2.name AS Person, <br />
-            count(t) AS `Common Topic Count`,
-            <br />
-            collect(t.name) AS `Common Topics`
-            <br />
-            ORDER BY count(t) DESC;
-          </Typography>
-          <CopyToClipboard>
-            {({ copy }) => <CopyIcon onClick={() => copy("test")} />}
-          </CopyToClipboard>
+          <div className={classes.code}>
+            <Typography component="p" variant="body2">
+              {cypherString}
+            </Typography>
+            <CopyToClipboard>
+              {({ copy }) => <CopyIcon onClick={() => copy(cypherString)} />}
+            </CopyToClipboard>
+          </div>
         </div>
       </Paper>
     );

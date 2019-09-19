@@ -42,7 +42,7 @@ class ForceGraph extends Component {
       .force("charge", forceManyBody().strength(-200))
       .force("collide", forceCollide(32).iterations(16))
       .force("X", forceX(displaySize[0] / 2).strength(0.45))
-      .force("Y", forceY(displaySize[1] / 2).strength(0.2));
+      .force("Y", forceY(displaySize[1] / 2).strength(0.15));
 
     select(node).attr("class", "force");
 

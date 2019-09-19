@@ -24,18 +24,24 @@ class CommonTopicGraphs extends Component {
       <div id="wrapper">
         <div id="personToPerson">
           <p>People with common interests</p>
-          <ForceGraph data={this.props.p2p_data} size={[360, 700]} />
+          <ForceGraph
+            data={this.props.p2p_data}
+            size={[360, this.props.bipartite_data.links.length * 20]}
+          />
         </div>
         <div id="personToTopic">
           <BipartiteGraph
             data={this.props.bipartite_data}
-            size={[360, 700]}
+            size={[360, this.props.bipartite_data.links.length * 20]}
             orientation={"vertical"}
           />
         </div>
         <div id="topicToTopic">
           <p>Topics with common people</p>
-          <ForceGraph data={this.props.t2t_data} size={[360, 700]} />
+          <ForceGraph
+            data={this.props.t2t_data}
+            size={[360, this.props.bipartite_data.links.length * 20]}
+          />
         </div>
       </div>
     );

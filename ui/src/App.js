@@ -140,7 +140,7 @@ class App extends Component {
             }
           }
         `}
-        pollInterval={500}
+        pollInterval={30000}
       >
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;

@@ -78,10 +78,35 @@ class ForceGraph extends Component {
       .select("g.force-nodes")
       .selectAll(".force g")
       .data(nodes)
-      .join(circleEntered, circleUpdated, circleExit)
+      .join("g")
       .on("mouseover", highlightLinkedCircles)
       .on("mouseout", unhighlightLinkedCircles)
       .call(dragging(simulation));
+
+    circle.selectAll("*").remove();
+
+    circle
+      .append("circle")
+      .attr("r", 25)
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 1.5)
+      .attr("fill", d => (d.nodeLabel === "Person" ? "orange" : "lightblue"));
+
+    var text = circle
+      .append("text")
+      .attr("y", d => (d.name.match(/\s/g) || []).length * -7.5 - 10);
+
+    text
+      .selectAll("tespan.text")
+      .data(d => d.name.split(" "))
+      .enter()
+      .append("tspan")
+      .attr("class", "text")
+      .text(d => d)
+      .attr("dy", 16)
+      .attr("x", 0)
+      .attr("dx", 0)
+      .attr("text-anchor", "middle");
 
     simulation.on("tick", () => {
       link
@@ -92,49 +117,6 @@ class ForceGraph extends Component {
 
       circle.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
     });
-
-    function circleEntered(enter) {
-      let circleGs = enter.append("g").attr("class", "circle");
-
-      circleGs
-        .append("circle")
-        .attr("r", 25)
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 1.5)
-        .attr("fill", d => (d.nodeLabel === "Person" ? "orange" : "lightblue"));
-
-      var text = circleGs
-        .append("text")
-        .attr("y", d => (d.name.match(/\s/g) || []).length * -7.5 - 10);
-
-      text
-        .selectAll("tespan.text")
-        .data(d => d.name.split(" "))
-        .enter()
-        .append("tspan")
-        .attr("class", "text")
-        .text(d => d)
-        .attr("dy", 16)
-        .attr("x", 0)
-        .attr("dx", 0)
-        .attr("text-anchor", "middle");
-
-      return circleGs;
-    }
-
-    function circleUpdated(update) {
-      update
-        .on("mouseover", highlightLinkedCircles)
-        .on("mouseout", unhighlightLinkedCircles);
-      return update;
-    }
-
-    function circleExit(exit) {
-      exit
-        .on("mouseover", highlightLinkedCircles)
-        .on("mouseout", unhighlightLinkedCircles);
-      return exit;
-    }
 
     function highlightLinkedCircles(d) {
       linkedByIndex = createLinkedByIndex(linkData);

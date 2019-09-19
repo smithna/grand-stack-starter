@@ -77,55 +77,41 @@ class BipartiteGraph extends Component {
       .select("g.bipartite-nodes")
       .selectAll(".bipartite g.circle")
       .data(nodes)
-      .join(circleEntered, circleUpdated, circleExit);
+      .join("g")
+      .attr("class", "circle");
 
-    function circleEntered(enter) {
-      let circleGs = enter.append("g").attr("class", "circle");
+    circle.selectAll("*").remove();
 
-      circleGs
-        .append("circle")
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 1.5)
-        .attr("r", 10)
-        .attr("x", 0)
-        .attr("fill", d => (d.nodeLabel === "Person" ? "orange" : "lightblue"))
-        .each(
-          d =>
-            (d.fx =
-              d.nodeLabel === "Person"
-                ? displaySize[1] / 3
-                : (displaySize[1] * 2) / 3)
-        )
-        .on("mouseover", highlightLinkedCircles)
-        .on("mouseout", unhighlightLinkedCircles);
+    circle
+      .append("circle")
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 1.5)
+      .attr("r", 10)
+      .attr("x", 0)
+      .attr("fill", d => (d.nodeLabel === "Person" ? "orange" : "lightblue"))
+      .each(
+        d =>
+          (d.fx =
+            d.nodeLabel === "Person"
+              ? displaySize[1] / 3
+              : (displaySize[1] * 2) / 3)
+      )
+      .on("mouseover", highlightLinkedCircles)
+      .on("mouseout", unhighlightLinkedCircles);
 
-      circleGs
-        .append("text")
-        .text(d => d.name)
-        .attr("x", d => (d.nodeLabel === "Person" ? -13 : 13))
-        .attr("y", 3)
-        .attr("writing-mode", d => (orientation === "horizontal" ? "tb" : "lr"))
-        .attr("text-anchor", d => (d.nodeLabel === "Person" ? "end" : "start"));
-
-      return circleGs;
-    }
-
-    function circleUpdated(update) {
-      update
-        .on("mouseover", highlightLinkedCircles)
-        .on("mouseout", unhighlightLinkedCircles);
-      return update;
-    }
-
-    function circleExit(exit) {
-      exit
-        .on("mouseover", highlightLinkedCircles)
-        .on("mouseout", unhighlightLinkedCircles);
-      return exit;
-    }
+    circle
+      .append("text")
+      .text(d => d.name)
+      .attr("x", d => (d.nodeLabel === "Person" ? -13 : 13))
+      .attr("y", 3)
+      .attr("writing-mode", d => (orientation === "horizontal" ? "tb" : "lr"))
+      .attr("text-anchor", d => (d.nodeLabel === "Person" ? "end" : "start"));
 
     function highlightLinkedCircles(d) {
       linkedByIndex = createLinkedByIndex(linkData);
+      console.log(linkedByIndex);
+      console.log(linkData);
+      console.log(d.name);
       selectAll(".bipartite circle")
         .filter(n => isConnected(d, n, linkedByIndex))
         .transition()

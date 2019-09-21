@@ -28,6 +28,7 @@ import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import CommonTopicGraphs from "./CommonTopicGraphs";
 import UserList from "./UserList";
+import AddTopics from "./AddTopics";
 import { group, rollups } from "d3-array";
 import classNames from "classnames";
 
@@ -360,6 +361,9 @@ class App extends Component {
                     ) : null}
                     {this.state.selectedView === "Users" ? (
                       <UserList data={p2p_data} />
+                    ) : null}
+                    {this.state.selectedView === "NewInterest" ? (
+                      <AddTopics />
                     ) : null}
                   </Typography>
                 </main>

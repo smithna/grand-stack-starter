@@ -1,15 +1,7 @@
 import React from "react";
 import "./UserList.css";
-import { withStyles, rgbToHex } from "@material-ui/core/styles";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-  Typography
-} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import { Paper, Typography } from "@material-ui/core";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
@@ -125,7 +117,7 @@ class UserList extends React.Component {
 
     function formatTopics(topicList) {
       let tokens = topicList.split(", ");
-      if (tokens.length == 1) return topicList;
+      if (tokens.length === 1) return topicList;
       else {
         let finalToken = tokens.slice(-1);
         return tokens.slice(0, -1).join(", ") + ", or " + finalToken;

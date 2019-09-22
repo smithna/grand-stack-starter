@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-import ReactAutosuggest from "./ReactAutoSuggest.js";
-import { ApolloProvider } from "react-apollo";
+import TopicsInput from "./ReactAutoSuggest.js";
 
 const meetup_query = gql`
   query meetupProfileQuery {
@@ -17,7 +16,13 @@ const meetup_query = gql`
 `;
 
 const topic_query = gql`
-  {
+  query PersonInterests($name: String!) {
+    Person(name: $name) {
+      name
+      interests {
+        name
+      }
+    }
     Topic {
       name
     }
@@ -31,17 +36,17 @@ class TopicChips extends Component {
 
   render() {
     return (
-      <Query query={topic_query}>
+      <Query query={topic_query} variables={{ name: this.props.currentUser }}>
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error</p>;
-          console.log(data);
           return (
-            <ReactAutosuggest
+            <TopicsInput
               label="My topics"
               placeholder="Add your interests"
               blurBehavior="add"
               topics={data.Topic.map(d => ({ name: d.name }))}
+              personTopics={["R", "Python"]}
               fullWidth
             />
           );

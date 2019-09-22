@@ -8,43 +8,35 @@ import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import ChipInput from "material-ui-chip-input";
+import Button from "@material-ui/core/Button";
+import { useMutation } from "@apollo/react-hooks";
+import gql from "graphql-tag";
 
-const suggestions = [
-  { name: "Afghanistan" },
-  { name: "Aland Islands" },
-  { name: "Albania" },
-  { name: "Algeria" },
-  { name: "American Samoa" },
-  { name: "Andorra" },
-  { name: "Angola" },
-  { name: "Anguilla" },
-  { name: "Antarctica" },
-  { name: "Antigua and Barbuda" },
-  { name: "Argentina" },
-  { name: "Armenia" },
-  { name: "Aruba" },
-  { name: "Australia" },
-  { name: "Austria" },
-  { name: "Azerbaijan" },
-  { name: "Bahamas" },
-  { name: "Bahrain" },
-  { name: "Bangladesh" },
-  { name: "Barbados" },
-  { name: "Belarus" },
-  { name: "Belgium" },
-  { name: "Belize" },
-  { name: "Benin" },
-  { name: "Bermuda" },
-  { name: "Bhutan" },
-  { name: "Bolivia, Plurinational State of" },
-  { name: "Bonaire, Sint Eustatius and Saba" },
-  { name: "Bosnia and Herzegovina" },
-  { name: "Botswana" },
-  { name: "Bouvet Island" },
-  { name: "Brazil" },
-  { name: "British Indian Ocean Territory" },
-  { name: "Brunei Darussalam" }
-];
+const interestMutation = gql`
+  mutation replaceInterests($PersonInput: String!, $TopicsInput: [String]) {
+    ReplaceInterests(personName: $PersonInput, topicNames: $TopicsInput) {
+      name
+      interests {
+        name
+      }
+    }
+  }
+`;
+
+const UpdateButton = ({ values }) => {
+  let newInterests = values.length > 0 ? values : ["Placeholder"];
+  const [runQuery, { data }] = useMutation(interestMutation);
+  const handleClick = () => {
+    runQuery({
+      variables: {
+        PersonInput: "Nathan Smith",
+        TopicsInput: values
+      }
+    });
+  };
+
+  return <Button onClick={handleClick}>Update your interests</Button>;
+};
 
 function renderInput(inputProps) {
   const { value, onChange, chips, ref, ...other } = inputProps;
@@ -127,9 +119,9 @@ const styles = theme => ({
 
 class ReactAutosuggest extends React.Component {
   state = {
-    // value: '',
+    value: this.props.personTopics,
     suggestions: "",
-    value: [],
+    //value: [],
     textFieldInput: ""
   };
 
@@ -191,41 +183,45 @@ class ReactAutosuggest extends React.Component {
     });
   }
 
+  handleUpdateClick(items) {
+    alert(items);
+  }
+
   render() {
     const { classes, ...other } = this.props;
-    {
-      console.log(this.props.topics);
-    }
 
     return (
-      <Autosuggest
-        theme={{
-          container: classes.container,
-          suggestionsContainerOpen: classes.suggestionsContainerOpen,
-          suggestionsList: classes.suggestionsList,
-          suggestion: classes.suggestion
-        }}
-        renderInputComponent={renderInput}
-        suggestions={this.state.suggestions}
-        onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
-        onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
-        renderSuggestionsContainer={renderSuggestionsContainer}
-        getSuggestionValue={getSuggestionValue}
-        renderSuggestion={renderSuggestion}
-        onSuggestionSelected={(e, { suggestionValue }) => {
-          this.handleAddChip(suggestionValue);
-          e.preventDefault();
-        }}
-        focusInputOnSuggestionClick={false}
-        inputProps={{
-          chips: this.state.value,
-          value: this.state.textFieldInput,
-          onChange: this.handletextFieldInputChange,
-          onAdd: chip => this.handleAddChip(chip),
-          onDelete: (chip, index) => this.handleDeleteChip(chip, index),
-          ...other
-        }}
-      />
+      <React.Fragment>
+        <Autosuggest
+          theme={{
+            container: classes.container,
+            suggestionsContainerOpen: classes.suggestionsContainerOpen,
+            suggestionsList: classes.suggestionsList,
+            suggestion: classes.suggestion
+          }}
+          renderInputComponent={renderInput}
+          suggestions={this.state.suggestions}
+          onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
+          onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
+          renderSuggestionsContainer={renderSuggestionsContainer}
+          getSuggestionValue={getSuggestionValue}
+          renderSuggestion={renderSuggestion}
+          onSuggestionSelected={(e, { suggestionValue }) => {
+            this.handleAddChip(suggestionValue);
+            e.preventDefault();
+          }}
+          focusInputOnSuggestionClick={false}
+          inputProps={{
+            chips: this.state.value,
+            value: this.state.textFieldInput,
+            onChange: this.handletextFieldInputChange,
+            onAdd: chip => this.handleAddChip(chip),
+            onDelete: (chip, index) => this.handleDeleteChip(chip, index),
+            ...other
+          }}
+        />
+        <UpdateButton values={this.state.value} />
+      </React.Fragment>
     );
   }
 }
@@ -233,7 +229,8 @@ class ReactAutosuggest extends React.Component {
 ReactAutosuggest.propTypes = {
   allowDuplicates: PropTypes.bool,
   classes: PropTypes.object.isRequired,
-  topics: PropTypes.array
+  topics: PropTypes.array,
+  personTopics: PropTypes.array
 };
 
 export default withStyles(styles)(ReactAutosuggest);

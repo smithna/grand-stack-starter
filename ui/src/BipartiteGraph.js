@@ -109,9 +109,6 @@ class BipartiteGraph extends Component {
 
     function highlightLinkedCircles(d) {
       linkedByIndex = createLinkedByIndex(linkData);
-      console.log(linkedByIndex);
-      console.log(linkData);
-      console.log(d.name);
       selectAll(".bipartite circle")
         .filter(n => isConnected(d, n, linkedByIndex))
         .transition()

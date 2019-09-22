@@ -95,7 +95,7 @@ class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      usernameFilter: this.props.data.nodes.map(n => n.name).sort()[0]
+      usernameFilter: this.props.currentUser
     };
   }
 

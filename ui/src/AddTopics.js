@@ -22,7 +22,11 @@ class AddTopic extends Component {
     return (
       <div>
         <MeetupAuth onCurrentUserChange={this.handleCurrentUserChange} />
-        <TopicChips currentUser={this.props.currentUser} />
+        {this.props.currentUser ? (
+          <TopicChips currentUser={this.props.currentUser} />
+        ) : (
+          <div></div>
+        )}
       </div>
     );
   }

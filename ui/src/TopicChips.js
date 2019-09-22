@@ -41,14 +41,21 @@ class TopicChips extends Component {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error</p>;
           return (
-            <TopicsInput
-              label="My topics"
-              placeholder="Add your interests"
-              blurBehavior="add"
-              topics={data.Topic.map(d => ({ name: d.name }))}
-              personTopics={["R", "Python"]}
-              fullWidth
-            />
+            <React.Fragment>
+              <ul>
+                {data.Topic.map(d => (
+                  <li>{d.name}</li>
+                ))}
+              </ul>
+              <TopicsInput
+                label="My topics"
+                placeholder="Add your interests"
+                blurBehavior="add"
+                topics={data.Topic.map(d => ({ name: d.name }))}
+                personTopics={data.Person[0].interests.map(d => d.name)}
+                fullWidth
+              />
+            </React.Fragment>
           );
         }}
       </Query>

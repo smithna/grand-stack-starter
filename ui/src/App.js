@@ -115,8 +115,8 @@ class App extends Component {
   }
 
   handleMeetupLogin(userName) {
-    //this.setState({currentUser: userName});
-    console.log(userName);
+    this.setState({ currentUser: userName });
+    //console.log(userName);
   }
 
   setSelectedView(viewName) {

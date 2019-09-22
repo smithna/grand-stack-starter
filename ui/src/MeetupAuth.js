@@ -21,11 +21,12 @@ const GET_MEETUP_PROFILE = gql`
 
 const Greeting = ({ userName, memoFunction }) => {
   const userNameMemo = useMemo(() => memoFunction(userName), [userName]);
-  console.log("userName: " + userName);
-  console.log("userNameMemo: " + userNameMemo);
   return (
     <div>
-      <p>Hi {userName}. Enter your interests to join the community graph.</p>
+      <p>
+        Hi {userName}. Enter your interests to join the community graph. Choose
+        a topic below or create a new one.
+      </p>
     </div>
   );
 };

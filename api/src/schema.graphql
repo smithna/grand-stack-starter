@@ -10,6 +10,24 @@ type Topic {
     inCommonWith: [Topic] @cypher(statement: "MATCH (this)<-[:INTERESTED_IN]-(:Person)-[:INTERESTED_IN]->(t:Topic) RETURN DISTINCT t")
 }
 
+type Mutation {
+
+
+
+  ReplaceInterests(personName: String!, topicNames: [String]): Person @cypher(
+      statement:"""MERGE (p:Person {name:$personName})
+WITH p
+OPTIONAL MATCH (p)-[r:INTERESTED_IN]-()
+DELETE r
+WITH p
+UNWIND $topicNames AS interest
+MERGE (t:Topic {name:interest})
+WITH p, t
+MERGE (p)-[:INTERESTED_IN]-(t)
+RETURN p"""
+)
+}
+
 type Query {
     peopleBySubstring(substring:String!): [Person] @cypher(statement: "MATCH (p:Person) where p.name CONTAINS $substring RETURN p")
 }

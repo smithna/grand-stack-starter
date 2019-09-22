@@ -28,6 +28,7 @@ import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import CommonTopicGraphs from "./CommonTopicGraphs";
 import UserList from "./UserList";
+import AddTopics from "./AddTopics";
 import { group, rollups } from "d3-array";
 import classNames from "classnames";
 
@@ -105,10 +106,17 @@ const styles = theme => ({
 class App extends Component {
   constructor(props) {
     super(props);
+    this.handleMeetupLogin = this.handleMeetupLogin.bind(this);
     this.state = {
       selectedView: "Home",
-      open: true
+      open: true,
+      currentUser: ""
     };
+  }
+
+  handleMeetupLogin(userName) {
+    this.setState({ currentUser: userName });
+    //console.log(userName);
   }
 
   setSelectedView(viewName) {
@@ -359,7 +367,16 @@ class App extends Component {
                       />
                     ) : null}
                     {this.state.selectedView === "Users" ? (
-                      <UserList data={p2p_data} />
+                      <UserList
+                        data={p2p_data}
+                        currentUser={this.state.currentUser}
+                      />
+                    ) : null}
+                    {this.state.selectedView === "NewInterest" ? (
+                      <AddTopics
+                        onMeetupLogin={this.handleMeetupLogin}
+                        currentUser={this.state.currentUser}
+                      />
                     ) : null}
                   </Typography>
                 </main>

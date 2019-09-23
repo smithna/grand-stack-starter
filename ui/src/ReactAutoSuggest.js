@@ -23,13 +23,14 @@ const interestMutation = gql`
   }
 `;
 
-const UpdateButton = ({ values }) => {
-  let newInterests = values.length > 0 ? values : ["Placeholder"];
+const UpdateButton = ({ values, currentUser, updateTopics }) => {
   const [runQuery, { data }] = useMutation(interestMutation);
+
   const handleClick = () => {
+    updateTopics(values);
     runQuery({
       variables: {
-        PersonInput: "Nathan Smith",
+        PersonInput: currentUser,
         TopicsInput: values
       }
     });
@@ -117,7 +118,7 @@ const styles = theme => ({
   }
 });
 
-class ReactAutosuggest extends React.Component {
+class TopicsInput extends React.Component {
   state = {
     value: this.props.personTopics,
     suggestions: "",
@@ -220,17 +221,23 @@ class ReactAutosuggest extends React.Component {
             ...other
           }}
         />
-        <UpdateButton values={this.state.value} />
+        <UpdateButton
+          values={this.state.value}
+          currentUser={this.props.currentUser}
+          updateTopics={this.props.updateTopics}
+        />
       </React.Fragment>
     );
   }
 }
 
-ReactAutosuggest.propTypes = {
+TopicsInput.propTypes = {
   allowDuplicates: PropTypes.bool,
   classes: PropTypes.object.isRequired,
   topics: PropTypes.array,
-  personTopics: PropTypes.array
+  personTopics: PropTypes.array,
+  currentUser: PropTypes.string,
+  updateTopics: PropTypes.func
 };
 
-export default withStyles(styles)(ReactAutosuggest);
+export default withStyles(styles)(TopicsInput);

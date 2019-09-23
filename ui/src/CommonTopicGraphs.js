@@ -21,10 +21,6 @@ class CommonTopicGraphs extends Component {
         ? topicNodes.length
         : personNodes.length;
     const displayHeight = longestNodeLength < 8 ? 160 : longestNodeLength * 22;
-    console.log(displayHeight);
-    console.log(longestNodeLength);
-    console.log(personNodes);
-    console.log(topicNodes);
 
     return (
       <div id="wrapper">

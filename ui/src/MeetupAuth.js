@@ -48,8 +48,6 @@ class MeetupAuth extends Component {
   }
 
   handleCurrentUserChange(u) {
-    console.log("called memo function");
-    console.log(u);
     this.props.onCurrentUserChange(u);
     return u;
   }

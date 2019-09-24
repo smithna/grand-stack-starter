@@ -5,7 +5,7 @@ import OneGraphAuth from "onegraph-auth";
 import React, { Component, useMemo } from "react";
 import Button from "@material-ui/core/Button";
 
-const APP_ID = "00c7ecd4-37a2-4797-b052-0a21d66e16ad";
+const APP_ID = process.env.ONEGRAPH_APP_ID;
 
 const GET_MEETUP_PROFILE = gql`
   query meetupProfileQuery {

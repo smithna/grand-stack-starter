@@ -119,7 +119,6 @@ class TopicChips extends Component {
   }
 
   handleTopicChange(topics) {
-    console.log("handleTopicchange: " + topics);
     this.setState({ myTopics: topics });
   }
 

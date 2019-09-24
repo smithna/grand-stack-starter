@@ -36,7 +36,11 @@ const UpdateButton = ({ values, currentUser, updateTopics }) => {
     });
   };
 
-  return <Button onClick={handleClick}>Update your interests</Button>;
+  return (
+    <Button variant="contained" onClick={handleClick}>
+      Update your interests
+    </Button>
+  );
 };
 
 function renderInput(inputProps) {

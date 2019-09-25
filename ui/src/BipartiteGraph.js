@@ -177,7 +177,7 @@ function BipartiteGraph(props) {
       .filter(n => isConnected(d, n, linkedByIndex))
       .transition()
       .duration("500")
-      .attr("stroke", "#000")
+      .attr("stroke", "#333")
       .attr("stroke-width", 2.5);
   }
 

@@ -109,7 +109,7 @@ class App extends Component {
     this.handleMeetupLogin = this.handleMeetupLogin.bind(this);
     this.state = {
       selectedView: "Home",
-      open: true,
+      open: false,
       currentUser: ""
     };
   }

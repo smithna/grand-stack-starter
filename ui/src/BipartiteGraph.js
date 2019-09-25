@@ -9,7 +9,8 @@ import {
   forceY,
   forceManyBody
 } from "d3-force";
-import { select, selectAll } from "d3-selection";
+import { select, event } from "d3-selection";
+import { drag } from "d3-drag";
 import { transition } from "d3-transition";
 
 function BipartiteGraph(props) {
@@ -116,6 +117,8 @@ function BipartiteGraph(props) {
         .attr("writing-mode", d => (orientation === "horizontal" ? "tb" : "lr"))
         .attr("text-anchor", d => (d.nodeLabel === "Person" ? "end" : "start"));
     } else {
+      circle.call(dragging(simulation));
+
       var text = circle
         .append("text")
         .attr("y", d => (d.name.match(/\s/g) || []).length * -7.5 - 10);
@@ -177,6 +180,30 @@ function BipartiteGraph(props) {
       .duration("500")
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5);
+  }
+
+  function dragging(simulation) {
+    function dragstarted(d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragended(d) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+
+    return drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended);
   }
 
   return (

@@ -147,7 +147,7 @@ class TopicChips extends Component {
                     <li
                       style={{
                         color: currentTopics.includes(d.name)
-                          ? "#45a5d1"
+                          ? "#43bf9a"
                           : "#000"
                       }}
                     >

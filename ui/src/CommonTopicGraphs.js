@@ -25,7 +25,7 @@ class CommonTopicGraphs extends Component {
     return (
       <div id="wrapper">
         <div id="personToPerson">
-          <p>People with common interests</p>
+          <p className="topdesc">People with common interests</p>
           <BipartiteGraph
             data={this.props.p2p_data}
             size={[360, displayHeight]}
@@ -40,7 +40,7 @@ class CommonTopicGraphs extends Component {
           />
         </div>
         <div id="topicToTopic">
-          <p>Topics with common people</p>
+          <p className="topdesc">Topics with common people</p>
           <BipartiteGraph
             data={this.props.t2t_data}
             size={[360, displayHeight]}

@@ -16,6 +16,7 @@
 
 .App-title {
   font-size: 1.5em;
+  color: white;
 }
 
 .App-intro {
@@ -28,6 +29,13 @@
   width: 80%;
 }
 
+.topdesc {
+  padding: 2px;
+  font-size: large;
+  text-align: center;
+  color: #282828;
+}
+
 #personToTopic,
 #personToPerson,
 #topicToTopic {
@@ -35,6 +43,8 @@
   padding: 2px;
   font-size: smaller;
   text-align: center;
+  color: #333;
+  max-width: 364px;
 }
 
 .App-header {

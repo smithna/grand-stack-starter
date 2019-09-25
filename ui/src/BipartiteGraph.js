@@ -49,21 +49,27 @@ function BipartiteGraph(props) {
     );
   }
 
-  const simulation = forceSimulation(nodes)
-    .force("link", forceLink(links).id(d => d.name))
-    .force("collide", forceCollide(15).iterations(16));
+  const simulation = forceSimulation(nodes).force(
+    "collide",
+    forceCollide(15).iterations(16)
+  );
 
   if (props.layout === "bipartite") {
-    simulation.force(
-      "center",
-      forceCenter(props.size[0] / 2, props.size[1] / 2)
-    );
+    simulation
+      .force("link", forceLink(links).id(d => d.name))
+      .force("center", forceCenter(props.size[0] / 2, props.size[1] / 2));
   } else {
     simulation
-      .force("charge", forceManyBody().strength(-200))
-      .force("collide", forceCollide(32).iterations(16))
-      .force("X", forceX(props.size[0] / 2).strength(0.45))
-      .force("Y", forceY(props.size[1] / 2).strength(0.15));
+      .force(
+        "link",
+        forceLink(links)
+          .id(d => d.name)
+          .distance(d => 350 - d.commonalityCount * 3)
+      )
+      .force("charge", forceManyBody().strength(-1500))
+      .force("collide", forceCollide(37).iterations(16))
+      .force("X", forceX(props.size[0] / 2).strength(0.4))
+      .force("Y", forceY(props.size[1] / 2).strength(0.25));
   }
 
   function restart() {
@@ -92,9 +98,9 @@ function BipartiteGraph(props) {
       .append("circle")
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5)
-      .attr("r", props.layout === "bipartite" ? 10 : 25)
+      .attr("r", props.layout === "bipartite" ? 10 : 35)
       .attr("x", 0)
-      .attr("fill", d => (d.nodeLabel === "Person" ? "orange" : "lightblue"));
+      .attr("fill", d => (d.nodeLabel === "Person" ? "#de8a5a" : "#70a494"));
 
     circle
       .on("mouseover", highlightLinkedCircles)
@@ -121,7 +127,7 @@ function BipartiteGraph(props) {
 
       var text = circle
         .append("text")
-        .attr("y", d => (d.name.match(/\s/g) || []).length * -7.5 - 10);
+        .attr("y", d => (d.name.match(/\s/g) || []).length * -7.5 - 12);
 
       text
         .selectAll("tespan.text")

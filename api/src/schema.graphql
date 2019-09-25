@@ -21,6 +21,8 @@ OPTIONAL MATCH (p)-[r:INTERESTED_IN]-()
 DELETE r
 WITH p
 UNWIND $topicNames AS interest
+WITH interest, p
+WHERE interest <> ''
 MERGE (t:Topic {name:interest})
 WITH p, t
 MERGE (p)-[:INTERESTED_IN]-(t)

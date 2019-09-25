@@ -84,7 +84,7 @@ function BipartiteGraph(props) {
     link
       .data(links)
       .join("line")
-      .attr("stroke", "black")
+      .attr("stroke", "#999999")
       .attr("stroke-opacity", 0.6);
 
     circle
@@ -121,13 +121,15 @@ function BipartiteGraph(props) {
         .attr("x", d => (d.nodeLabel === "Person" ? -13 : 13))
         .attr("y", 3)
         .attr("writing-mode", d => (orientation === "horizontal" ? "tb" : "lr"))
-        .attr("text-anchor", d => (d.nodeLabel === "Person" ? "end" : "start"));
+        .attr("text-anchor", d => (d.nodeLabel === "Person" ? "end" : "start"))
+        .attr("fill","#282828");
     } else {
       circle.call(dragging(simulation));
 
       var text = circle
         .append("text")
-        .attr("y", d => (d.name.match(/\s/g) || []).length * -7.5 - 12);
+        .attr("y", d => (d.name.match(/\s/g) || []).length * -7.5 - 12)
+        .attr("fill","#333");
 
       text
         .selectAll("tespan.text")

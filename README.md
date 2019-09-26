@@ -1,8 +1,6 @@
-[![Deploy to now](https://deploy.now.sh/static/button.svg)](https://deploy.now.sh/?repo=https://github.com/grand-stack/grand-stack-starter&env=NEO4J_USER&env=NEO4J_URI&env=NEO4J_PASSWORD)
+# Meetup Mixer
 
-# GRANDstack Starter
-
-This project is a starter for building a [GRANDstack](https://grandstack.io) (GraphQL, React, Apollo, Neo4j Database) application. There are two components to the starter, the UI application (a React app) and the API app (GraphQL server).
+This project is an ice-breaker and an educational tool to teach people at a Meetup about graphs and Cypher. When new members show up to a Meetup for the first time, it can be hard to start conversations in a room full of strangers. Encourage your members enter two or three interests in Meetup Mixer. The app will recommed other people at the Meetup with common interests who they can talk to. The app will also show users the Cypher that they could use to update Neo4j with their interests directly.
 
 [![Hands On With The GRANDstack Starter](http://img.youtube.com/vi/rPC71lUhK_I/0.jpg)](http://www.youtube.com/watch?v=rPC71lUhK_I "Hands On With The GRANDstack Starter")
 
@@ -10,41 +8,48 @@ This project is a starter for building a [GRANDstack](https://grandstack.io) (Gr
 
 ### Neo4j
 
-You need a Neo4j instance, e.g. a [Neo4j Sandbox](http://neo4j.com/sandbox), a local instance via [Neo4j Desktop](https://neo4j.com/download), [Docker](http://hub.docker.com/_/neo4j) or a [Neo4j instance on AWS, Azure or GCP](http://neo4j.com/developer/guide-cloud-deployment) or [Neo4j Cloud](http://neo4j.com/cloud)
+Start by setting up a [Neo4j Sandbox](http://neo4j.com/sandbox). Choose to launch a Neo4j 3.4 sandbox. This will give you an empty Neo4j hosted in the cloud. Your sandbox will expire within a few days, so don't do this too far ahead of your Meetup. You can sign back in to Neo4j to extend it if you need to. When your sandbox is ready, click on details and note the IP Address and Bolt Port.
 
-For schemas using the  `@cypher` directive (as in this repo) via [`neo4j-graphql-js`](https://github.com/neo4j-graphql/neo4j-graphql-js), you need to have the [APOC library](https://github.com/neo4j-contrib/neo4j-apoc-procedures) installed, which should be automatic in Sandbox, Cloud and is a single click install in Neo4j Desktop. If when using the Sandbox / cloud you encounter an issue where an error similar to `Can not be converted to long: org.neo4j.kernel.impl.core.NodeProxy, Location: [object Object], Path: users` appears in the console when running the React app, try installing and using Neo4j locally instead.
+### OneGraph
 
-#### Sandbox setup
-A good tutorial can be found here: https://www.youtube.com/watch?v=rPC71lUhK_I
+OneGraph is a service that makes it easy to query many social and business sites from a single GraphQL endpoint. We'll use it to allow your users to sign in with Meetup. You could easily extend the application to support other authentication methods.
 
-#### Local setup
-1. [Download Neo4j Desktop](https://neo4j.com/download/)
-2. Install and open Neo4j Desktop.
-3. Create a new DB by clicking "New Graph", and clicking "create local graph".
-4. Set password to "letmein" (as suggested by `api/.env`), and click "Create".
-5. Make sure that the default credentials in `api/.env` are used. Leave them as follows: `NEO4J_URI=bolt://localhost:7687 NEO4J_USER=neo4j NEO4J_PASSWORD=letmein`
-6.  Click "Manage".
-7. Click "Plugins".
-8. Find "APOC" and click "Install".
-9. Click the "play" button at the top of left the screen, which should start the server. _(screenshot 2)_
-10. Wait until it says "RUNNING".
-11. Proceed forward with the rest of the tutorial.
+Visit [OneGraph.com](http://onegraph.com) and sign up for a free account. Create a new app and call it Meetup-Mixer. If you will be running Meetup Mixer on a server instead of localhost, add the domain or IP address of your server in the CORS Origins section. Note the AppID of the app you created.
+
+### Server Prep
+This app is built from the [GRANDstack](https://github.com/grand-stack/grand-stack-starter) (GraphQL, React, Apollo, Neo4j Database) starter project. You will need some React infrastructure on your server to run Meetup Mixer if you don't already have it installed.
+
+FIrst, install [NodeJS](https://nodejs.org/en/download/) according to the instructions for your system.
+
+Next, install [Yarn](https://yarnpkg.com/lang/en/docs/install/) according to the instructions for your system.
+
+Now transfer the contents of this repository to your server.
 
 ### [`/api`](./api)
 
-*Install dependencies*
+There are two components to the starter, the UI application (a React app) and the API app (GraphQL server). They both need to be running for your application to work. First, we'll set up the API app.
+
+Edit [`/api/.enf`](./api.env).
+
+Change the NEO4j_URI to match the IP address and Bolt port of your Neo4j sandbox.
+
+Change the NEO4J_PASSWPRD to the password for your server.
+
+*Install dependencies and start API server*
+```
+cd ./api
+yarn; yarn start
+```
+
+If you are running locally on Windows, instead of the command above, you might need to run 
 
 ```
-(cd ./ui && npm install)
-(cd ./api && npm install)
-```
-
-*Start API server*
-```
-cd ./api && npm start
-```
+yarn; yarn start-dev
+``` 
 
 ![](api/img/graphql-playground.png)
+
+You should now be able to see the GraphQL Playground at (http://localhost:40001/graphql)
 
 ### [`/ui`](./ui)
 
@@ -59,51 +64,4 @@ cd ./ui && npm start
 
 See [the project releases](https://github.com/grand-stack/grand-stack-starter/releases) for the changelog.
 
-## Deployment
 
-### Zeit Now v2
-
-Zeit Now v2 can be used with monorepos such as grand-stack-starter. [`now.json`](https://github.com/grand-stack/grand-stack-starter/blob/master/now.json) defines the configuration for deploying with Zeit Now v2.
-
-1. Set the now secrets for your Neo4j instance:
-
-```
-now secret add NEO4J_URI bolt+routing://<YOUR_NEO4J_INSTANCE_HERE>
-now secret add NEO4J_USER <YOUR_DATABASE_USERNAME_HERE>
-now secret add NEO4J_PASSWORD <YOUR_DATABASE_USER_PASSWORD_HERE>
-```
-
-2. Run `now`
-
-### Zeit Now v1
-
-1. Run `now` in `/api` and choose `package.json` when prompted.
-1. Set `REACT_APP_GRAPHQL_API` based on the API deployment URL from step 1 in `ui/.env`
-1. Run `now` in `/env` and choose `package.json` when prompted.
-
-## Docker Compose
-
-To use docker-compose to quickly start please make the following changes
-
-api/.env:
-```
-NEO4J_URI=bolt://neo4j:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=letmein
-GRAPHQL_LISTEN_PORT=4000
-GRAPHQL_URI=http://api:4000
-```
-
-Now you can quickly start via:
-```
-docker-compose up -d
-```
-
-If you want to load the example DB after the services have been started:
-```
-docker-compose run api npm run seedDb
-```
-
-
-This project is licensed under the Apache License v2.
-Copyright (c) 2018 Neo4j, Inc.

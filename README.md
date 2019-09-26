@@ -1,6 +1,6 @@
 # Meetup Mixer
 
-This project is an ice-breaker and an educational tool to teach people at a Meetup about graphs and Cypher. When new members show up to a Meetup for the first time, it can be hard to start conversations in a room full of strangers. Encourage your members enter two or three interests in Meetup Mixer. The app will recommed other people at the Meetup with common interests who they can talk to. The app will also show users the Cypher that they could use to update Neo4j with their interests directly.
+This project is an ice-breaker and an educational tool to teach people at a Meetup about graphs and Cypher. When new members show up to a Meetup for the first time, it can be hard to start conversations in a room full of strangers. Encourage your members to enter several interests in Meetup Mixer. The app will recommed other people at the Meetup with common interests who they can talk to. The app will also show users the Cypher that they could use to update Neo4j with their interests directly.
 
 [![Hands On With The GRANDstack Starter](http://img.youtube.com/vi/rPC71lUhK_I/0.jpg)](http://www.youtube.com/watch?v=rPC71lUhK_I "Hands On With The GRANDstack Starter")
 
@@ -29,7 +29,7 @@ Now transfer the contents of this repository to your server.
 
 There are two components to the starter, the UI application (a React app) and the API app (GraphQL server). They both need to be running for your application to work. First, we'll set up the API app.
 
-Edit [`/api/.enf`](./api.env).
+Edit [`/api/.env`](./api.env).
 
 Change the NEO4j_URI to match the IP address and Bolt port of your Neo4j sandbox.
 

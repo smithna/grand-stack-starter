@@ -210,6 +210,18 @@ function BipartiteGraph(props) {
       .duration("500")
       .attr("stroke", "#333")
       .attr("stroke-width", 2.5);
+
+    select(d3Container.current)
+      .selectAll("line")
+      .filter(
+        n =>
+          isConnected(d, n.source, linkedByIndex) &&
+          isConnected(d, n.target, linkedByIndex)
+      )
+      .transition()
+      .duration("500")
+      .attr("stroke", "#333")
+      .attr("stroke-opacity", 1);
   }
 
   function unhighlightLinkedCircles(d) {
@@ -219,6 +231,13 @@ function BipartiteGraph(props) {
       .duration("500")
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5);
+
+    select(d3Container.current)
+      .selectAll("line")
+      .transition()
+      .duration("500")
+      .attr("stroke", "#999")
+      .attr("stroke-opacity", 0.6);
   }
 
   function dragging(simulation) {

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
 import BipartiteGraph from "./BipartiteGraph";
-import ForceGraph from "./ForceGraph";
 
 class CommonTopicGraphs extends Component {
   constructor(props) {

@@ -21,6 +21,7 @@ function BipartiteGraph(props) {
   const linkData = props.data.links;
   const links = linkData.map(d => Object.create(d));
   const nodes = props.data.nodes.map(d => Object.create(d));
+  const radius = props.layout === "bipartite" ? 10 : 35;
 
   function createLinkedByIndex(links) {
     let linkedByIndex = {};
@@ -51,7 +52,9 @@ function BipartiteGraph(props) {
 
   const simulation = forceSimulation(nodes).force(
     "collide",
-    forceCollide(15).iterations(16)
+    forceCollide(radius + 3)
+      .iterations(16)
+      .strength(0.9)
   );
 
   if (props.layout === "bipartite") {
@@ -66,10 +69,9 @@ function BipartiteGraph(props) {
           .id(d => d.name)
           .distance(d => 350 - d.commonalityCount * 3)
       )
-      .force("charge", forceManyBody().strength(-1500))
-      .force("collide", forceCollide(37).iterations(16))
-      .force("X", forceX(props.size[0] / 2).strength(0.4))
-      .force("Y", forceY(props.size[1] / 2).strength(0.25));
+      .force("charge", forceManyBody().strength(-1200))
+      .force("X", forceX(props.size[0] / 2).strength(0.45))
+      .force("Y", forceY(props.size[1] / 2).strength(0.3));
   }
 
   function restart() {
@@ -98,7 +100,7 @@ function BipartiteGraph(props) {
       .append("circle")
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5)
-      .attr("r", props.layout === "bipartite" ? 10 : 35)
+      .attr("r", radius)
       .attr("x", 0)
       .attr("fill", d => (d.nodeLabel === "Person" ? "#de8a5a" : "#70a494"));
 
@@ -122,14 +124,14 @@ function BipartiteGraph(props) {
         .attr("y", 3)
         .attr("writing-mode", d => (orientation === "horizontal" ? "tb" : "lr"))
         .attr("text-anchor", d => (d.nodeLabel === "Person" ? "end" : "start"))
-        .attr("fill","#282828");
+        .attr("fill", "#282828");
     } else {
       circle.call(dragging(simulation));
 
       var text = circle
         .append("text")
         .attr("y", d => (d.name.match(/\s/g) || []).length * -7.5 - 12)
-        .attr("fill","#333");
+        .attr("fill", "#333");
 
       text
         .selectAll("tespan.text")
@@ -146,10 +148,18 @@ function BipartiteGraph(props) {
 
     simulation.on("tick", () => {
       link
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
+        .attr("x1", d =>
+          Math.max(radius, Math.min(props.size[0] - radius, d.source.x))
+        )
+        .attr("y1", d =>
+          Math.max(radius, Math.min(props.size[1] - radius, d.source.y))
+        )
+        .attr("x2", d =>
+          Math.max(radius, Math.min(props.size[0] - radius, d.target.x))
+        )
+        .attr("y2", d =>
+          Math.max(radius, Math.min(props.size[1] - radius, d.target.y))
+        );
 
       if (props.layout === "bipartite") {
         circle.each(
@@ -160,7 +170,16 @@ function BipartiteGraph(props) {
                 : (displaySize[0] * 2) / 3)
         );
       }
-      circle.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
+      //circle.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
+      circle.attr(
+        "transform",
+        d =>
+          "translate(" +
+          Math.max(radius, Math.min(props.size[0] - radius, d.x)) +
+          "," +
+          Math.max(radius, Math.min(props.size[1] - radius, d.y)) +
+          ")"
+      );
     });
 
     simulation

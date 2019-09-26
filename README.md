@@ -67,7 +67,7 @@ cd ./ui
 yarn; yarn start
 ```
 
-![](ui/img/View-community.png)
+![](ui/img/View-community.PNG)
 
 See [the project releases](https://github.com/grand-stack/grand-stack-starter/releases) for the changelog.
 

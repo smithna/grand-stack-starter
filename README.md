@@ -29,7 +29,7 @@ Now transfer the contents of this repository to your server.
 
 There are two components to the starter, the UI application (a React app) and the API app (GraphQL server). They both need to be running for your application to work. First, we'll set up the API app.
 
-Edit [`/api/.env`](./api.env).
+Edit /api/.env.
 
 Change the NEO4j_URI to match the IP address and Bolt port of your Neo4j sandbox.
 
@@ -53,14 +53,21 @@ You should now be able to see the GraphQL Playground at (http://localhost:40001/
 
 ### [`/ui`](./ui)
 
-This will start the GraphQL API in the foreground, so in another terminal session start the UI development server:
+Now that you have started the GraphQL server, you will configure the UI application.
+
+Edit /api/.env.
+
+Change REACT_APP_ONEGRAPH_APP_ID to your OneGraph app id.
+
+The GraphQL API is already running in the foreground of your terminal session. In another terminal session start the UI development server:
 
 *Start UI server*
 ```
-cd ./ui && npm start
+cd ./ui
+yarn; yarn start
 ```
 
-![](ui/img/default-app.png)
+![](ui/img/View-community.png)
 
 See [the project releases](https://github.com/grand-stack/grand-stack-starter/releases) for the changelog.
 

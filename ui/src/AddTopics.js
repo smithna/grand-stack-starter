@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import TopicChips from "./TopicChips";
+import TopicChips from "./TopicChipsHooks";
 import MeetupAuth from "./MeetupAuth";
 
 class AddTopic extends Component {

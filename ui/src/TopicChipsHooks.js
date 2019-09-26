@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Query } from "react-apollo";
+import React from "react";
+import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import TopicsInput from "./ReactAutoSuggest.js";
 import CopyToClipboard from "./CopyToClipboard.js";
@@ -104,7 +104,7 @@ const CodeSample = ({ currentUser, myTopics }) => {
     WITH p
     UNWIND ["${myTopics.join('", "')}"] AS interest
     MERGE (t:Topic {name:interest})
-    //Create INTERESTED_IN relationships from you to all of your topics
+    //Create INTERESTED_IN relationships from you to all of yoru topics
     WITH p, t
     MERGE (p)-[:INTERESTED_IN]-(t)
     RETURN p`;
@@ -132,52 +132,48 @@ const CodeSample = ({ currentUser, myTopics }) => {
   }
 };
 
-class TopicChips extends Component {
-  state = {
-    myTopics: "default"
+const TopicChips = props => {
+  const { loading, error, data, refetch } = useQuery(topic_query, {
+    variables: { name: props.currentUser }
+  });
+  let currentTopics = "";
+  let topicsChanged = false;
+
+  const handleTopicChange = topics => {
+    currentTopics = topics;
+    topicsChanged = true;
+    console.log("handleTopicChange:");
+    console.log(topicsChanged);
+    console.log(currentTopics);
+    refetch();
   };
-  constructor(props) {
-    super(props);
-    this.handleTopicChange = this.handleTopicChange.bind(this);
-  }
 
-  handleTopicChange(topics) {
-    this.setState({ myTopics: topics });
+  if (error) {
+    return <p>`Error! ${error}`</p>;
   }
-
-  render() {
-    return (
-      <Query query={topic_query} variables={{ name: this.props.currentUser }}>
-        {({ loading, error, data }) => {
-          if (loading) return <p>Loading...</p>;
-          if (error) return <p>Error</p>;
-          let currentTopics =
-            this.state.myTopics === "default"
-              ? data.Person[0].interests.map(i => i.name)
-              : this.state.myTopics;
-          return (
-            <React.Fragment>
-              <TopicsInput
-                label="My topics"
-                placeholder="Add your interests"
-                blurBehavior="add"
-                topics={data.Topic.map(d => ({ name: d.name }))}
-                personTopics={data.Person[0].interests.map(d => d.name)}
-                currentUser={this.props.currentUser}
-                updateTopics={this.handleTopicChange}
-                fullWidth
-              />
-              <TopicList data={data} myTopics={this.state.myTopics} />
-              <CodeSample
-                currentUser={this.props.currentUser}
-                myTopics={this.state.myTopics}
-              />
-            </React.Fragment>
-          );
-        }}
-      </Query>
-    );
+  if (loading) {
+    return <p>Loading ...</p>;
   }
-}
+  console.log("TopicChips:");
+  console.log(topicsChanged);
+  currentTopics = data.Person[0].interests.map(i => i.name);
+  console.log(currentTopics);
+  return (
+    <React.Fragment>
+      <TopicList data={data} myTopics={currentTopics} />
+      <TopicsInput
+        label="My topics"
+        placeholder="Add your interests"
+        blurBehavior="add"
+        topics={data.Topic.map(d => ({ name: d.name }))}
+        personTopics={data.Person[0].interests.map(d => d.name)}
+        currentUser={props.currentUser}
+        updateTopics={handleTopicChange}
+        fullWidth
+      />
+      <CodeSample currentUser={props.currentUser} myTopics={currentTopics} />
+    </React.Fragment>
+  );
+};
 
 export default TopicChips;

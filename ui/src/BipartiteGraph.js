@@ -149,16 +149,28 @@ function BipartiteGraph(props) {
     simulation.on("tick", () => {
       link
         .attr("x1", d =>
-          Math.max(radius, Math.min(props.size[0] - radius, d.source.x))
+          Math.max(
+            radius + 2.5,
+            Math.min(props.size[0] - radius - 2.5, d.source.x)
+          )
         )
         .attr("y1", d =>
-          Math.max(radius, Math.min(props.size[1] - radius, d.source.y))
+          Math.max(
+            radius + 2.5,
+            Math.min(props.size[1] - radius - 2.5, d.source.y)
+          )
         )
         .attr("x2", d =>
-          Math.max(radius, Math.min(props.size[0] - radius, d.target.x))
+          Math.max(
+            radius + 2.5,
+            Math.min(props.size[0] - radius - 2.5, d.target.x)
+          )
         )
         .attr("y2", d =>
-          Math.max(radius, Math.min(props.size[1] - radius, d.target.y))
+          Math.max(
+            radius + 2.5,
+            Math.min(props.size[1] - radius - 2.5, d.target.y)
+          )
         );
 
       if (props.layout === "bipartite") {
@@ -175,9 +187,9 @@ function BipartiteGraph(props) {
         "transform",
         d =>
           "translate(" +
-          Math.max(radius, Math.min(props.size[0] - radius, d.x)) +
+          Math.max(radius + 2.5, Math.min(props.size[0] - radius - 2.5, d.x)) +
           "," +
-          Math.max(radius, Math.min(props.size[1] - radius, d.y)) +
+          Math.max(radius + 2.5, Math.min(props.size[1] - radius - 2.5, d.y)) +
           ")"
       );
     });

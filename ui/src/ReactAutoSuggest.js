@@ -32,7 +32,8 @@ const UpdateButton = ({ values, currentUser, updateTopics }) => {
       variables: {
         PersonInput: currentUser,
         TopicsInput: values
-      }
+      },
+      refetchQueries: ["topic_query"]
     });
   };
 
@@ -126,7 +127,6 @@ class TopicsInput extends React.Component {
   state = {
     value: this.props.personTopics,
     suggestions: "",
-    //value: [],
     textFieldInput: ""
   };
 

@@ -81,7 +81,7 @@ const CodeSample = ({ currentUser, myTopics }) => {
     WITH p
     UNWIND ["${myTopics.join('", "')}"] AS interest
     MERGE (t:Topic {name:interest})
-    //Create INTERESTED_IN relationships from you to all of yoru topics
+    //Create INTERESTED_IN relationships from you to all of your topics
     WITH p, t
     MERGE (p)-[:INTERESTED_IN]-(t)
     RETURN p`;

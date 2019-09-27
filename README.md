@@ -1,8 +1,8 @@
 # Meetup Mixer
 
-This project is an ice-breaker and an educational tool to teach people at a Meetup about graphs and Cypher. When new members show up to a Meetup for the first time, it can be hard to start conversations in a room full of strangers. Encourage your members to enter several interests in Meetup Mixer. The app will recommed other people at the Meetup with common interests who they can talk to. The app will also show users the Cypher that they could use to update Neo4j with their interests directly.
+This project is an ice-breaker and an educational tool to teach people at a Meetup about graphs and Cypher. When new members show up to a Meetup for the first time, it can be hard to start conversations in a room full of strangers. Encourage your members to enter several interests in Meetup Mixer. The app will recommend other people at the Meetup with common interests who they can talk to. The app will also show users the Cypher that they could use to update Neo4j with their interests directly.
 
-[![Hands On With The GRANDstack Starter](http://img.youtube.com/vi/rPC71lUhK_I/0.jpg)](http://www.youtube.com/watch?v=rPC71lUhK_I "Hands On With The GRANDstack Starter")
+[![Meetup Mixer](https://img.youtube.com/vi/syUcgGkZIzs/0.jpg)](https://www.youtube.com/watch?v=syUcgGkZIzs "Meetup Mixer")
 
 ## Quickstart
 
@@ -19,7 +19,7 @@ Visit [OneGraph.com](http://onegraph.com) and sign up for a free account. Create
 ### Server Prep
 This app is built from the [GRANDstack](https://github.com/grand-stack/grand-stack-starter) (GraphQL, React, Apollo, Neo4j Database) starter project. You will need some React infrastructure on your server to run Meetup Mixer if you don't already have it installed.
 
-FIrst, install [NodeJS](https://nodejs.org/en/download/) according to the instructions for your system.
+First, install [NodeJS](https://nodejs.org/en/download/) according to the instructions for your system.
 
 Next, install [Yarn](https://yarnpkg.com/lang/en/docs/install/) according to the instructions for your system.
 

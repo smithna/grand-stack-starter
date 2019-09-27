@@ -1,4 +1,4 @@
-# GRANDstack Starter - GraphQL API
+# Meetup Mixer - GraphQL API
 
 
 ## Quick Start
@@ -6,13 +6,13 @@
 Install dependencies:
 
 ```
-npm install
+yarn
 ```
 
 Start the GraphQL service:
 
 ```
-npm start
+yarn start
 ```
 
 This will start the GraphQL service (by default on localhost:4000) where you can issue GraphQL requests or access GraphQL Playground in the browser:

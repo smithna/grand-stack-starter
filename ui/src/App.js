@@ -21,7 +21,8 @@ import {
   ChevronLeft as ChevronLeftIcon,
   ScatterPlot as DashboardIcon,
   EmojiPeople as PeopleIcon,
-  AddCircleOutline as AddIcon
+  AddCircleOutline as AddIcon,
+  Info as InfoIcon
 } from "@material-ui/icons";
 
 import { Query } from "react-apollo";
@@ -31,6 +32,7 @@ import UserList from "./UserList";
 import AddTopics from "./AddTopics";
 import { group, rollups } from "d3-array";
 import classNames from "classnames";
+import About from "./About";
 
 const drawerWidth = 240;
 
@@ -109,7 +111,7 @@ class App extends Component {
     this.handleMeetupLogin = this.handleMeetupLogin.bind(this);
     this.state = {
       selectedView: "Home",
-      open: false,
+      open: true,
       currentUser: ""
     };
   }
@@ -348,6 +350,16 @@ class App extends Component {
                         </ListItemIcon>
                         <ListItemText primary="Find Friends" />
                       </ListItem>
+                      <ListItem
+                        button
+                        onClick={() => this.setSelectedView("About")}
+                      >
+                        <ListItemIcon>
+                          <InfoIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="About" />
+                      </ListItem>
+                      
                     </div>
                   </List>
                 </Drawer>
@@ -376,6 +388,10 @@ class App extends Component {
                       <AddTopics
                         onMeetupLogin={this.handleMeetupLogin}
                         currentUser={this.state.currentUser}
+                      />
+                    ) : null}
+                    {this.state.selectedView === "About" ? (
+                      <About
                       />
                     ) : null}
                   </Typography>

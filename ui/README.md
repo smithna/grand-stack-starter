@@ -1,4 +1,4 @@
-# GRANDstack Starter - UI
+# Meetup Mixer - UI
 
 This directory contains a React app (bootstrapped with Create React App) that uses Apollo Client to query a GraphQL API.
 
@@ -9,13 +9,13 @@ The template app queries for a list of users from the GraphQL API and displays t
 Install dependencies:
 
 ```
-npm install
+yarn
 ```
 
 Start the development server:
 
 ```
-npm start
+yarn start
 ```
 
 This will serve the app on `http://localhost:3000`
@@ -32,36 +32,10 @@ Edit `.env` to specify the URI of the GraphQL API. The default is `http://localh
 
 ```
 REACT_APP_GRAPHQL_URI=http://localhost:4000
+REACT_APP_ONEGRAPH_APP_ID=YOUR_APP_ID
 ```
 
-## Build and Deploy (with Zeit Now)
 
-Be sure you've [deployed the GraphQL Service](../api#deployment) and have the URI of the GraphQL service you've deployed.
-
-### Configure 
-
-Create `.env.production` to override `.env` used for local development. For example if you've already deployed the GraphQL service, specify the GraphQL service URI in `.env.production`. 
-
-To take advantage of Zeit Now's free hosting tier you'll need to disable source maps (becuase the source map file size exceeds the maximum 1M for Now's free tier). Add `GENERATE_SOURCEMAP=false` to `.env.production`.
-
-So your `.env.production` should look like this (replacing your own GraphQL API URI):
-
-*.env.production*
-
-```
-REACT_APP_GRAPHQL_URI=https://grand-stack-starter-api-pqdeodpvok.now.sh
-GENERATE_SOURCEMAP=false
-```
-
-### Deploy With Zeit Now
-
-To use [Zeit Now](https://zeit.co/now) you'll need to download Zeit Desktop if you haven't already. And then run:
-
-```
-now
-```
-
-this will deploy your React app to Zeit Now and give you a unqiue URL for your app. For example: https://grand-stack-starter-ui-pwntmhvvwr.now.sh
 
 
 ## Material-UI

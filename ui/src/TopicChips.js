@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import TopicsInput from "./ReactAutoSuggest.js";
 import CopyToClipboard from "./CopyToClipboard.js";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import { FileCopy as CopyIcon } from "@material-ui/icons";
+import Button from "@material-ui/core/Button";
 
-const topic_query = gql`
+const GET_TOPICS = gql`
   query PersonInterests($name: String!) {
     Person(name: $name) {
       name
@@ -66,6 +67,41 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const REPLACE_INTERESTS = gql`
+  mutation replaceInterests($PersonInput: String!, $TopicsInput: [String]) {
+    ReplaceInterests(personName: $PersonInput, topicNames: $TopicsInput) {
+      name
+      interests {
+        name
+      }
+    }
+  }
+`;
+
+const UpdateButton = ({ values, currentUser, setTopicsUpdated }) => {
+  const [replaceInterests] = useMutation(REPLACE_INTERESTS);
+
+  const handleClick = () => {
+    console.log("button clicked");
+    console.log(currentUser);
+    console.log(values);
+    replaceInterests({
+      variables: {
+        PersonInput: currentUser,
+        TopicsInput: values
+      },
+      refetchQueries: ["GET_TOPICS"]
+    });
+    setTopicsUpdated("updated");
+  };
+
+  return (
+    <Button variant="contained" onClick={handleClick}>
+      Update your interests
+    </Button>
+  );
+};
+
 const TopicList = ({ data, myTopics }) => {
   const oldTopics = data.Topic.map(d => d.name);
   const allTopics = [...new Set([...oldTopics, ...myTopics])];
@@ -91,9 +127,9 @@ const TopicList = ({ data, myTopics }) => {
   );
 };
 
-const CodeSample = ({ currentUser, myTopics }) => {
+const CodeSample = ({ currentUser, myTopics, topicsUpdated }) => {
   const classes = useStyles();
-  if (myTopics === "default") {
+  if (topicsUpdated === "not updated") {
     return <div></div>;
   } else {
     const cypherString = `//If your user isn't in the database yet, create it
@@ -135,16 +171,16 @@ const CodeSample = ({ currentUser, myTopics }) => {
 };
 
 const TopicChips = props => {
-  const [currentTopics, setCurrentTopics] = useState("default");
-  const { loading, error, data, refetch } = useQuery(topic_query, {
+  const [currentTopics, setCurrentTopics] = useState([]);
+  const [topicsUpdated, setTopicsUpdated] = useState("not updated");
+  const { loading, error, data } = useQuery(GET_TOPICS, {
     variables: { name: props.currentUser }
   });
   //let currentTopics = "";
-  let topicsChanged = false;
 
   const handleTopicChange = topics => {
     setCurrentTopics(topics);
-    refetch();
+    setTopicsUpdated("not updated");
   };
 
   if (error) {
@@ -158,7 +194,7 @@ const TopicChips = props => {
       <TopicList
         data={data}
         myTopics={
-          currentTopics == "default"
+          topicsUpdated === "not updated"
             ? data.Person[0].interests.map(i => i.name)
             : currentTopics
         }
@@ -168,12 +204,20 @@ const TopicChips = props => {
         placeholder="Add your interests"
         blurBehavior="add"
         topics={data.Topic.map(d => ({ name: d.name }))}
-        personTopics={data.Person[0].interests.map(d => d.name)}
-        currentUser={props.currentUser}
-        updateTopics={handleTopicChange}
+        persontopics={data.Person[0].interests.map(d => d.name)}
+        updatetopics={handleTopicChange}
         fullWidth
       />
-      <CodeSample currentUser={props.currentUser} myTopics={currentTopics} />
+      <UpdateButton
+        values={currentTopics}
+        currentUser={props.currentUser}
+        setTopicsUpdated={setTopicsUpdated}
+      />
+      <CodeSample
+        currentUser={props.currentUser}
+        myTopics={currentTopics}
+        topicsUpdated={topicsUpdated}
+      />
     </React.Fragment>
   );
 };

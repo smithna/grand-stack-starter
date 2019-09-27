@@ -8,41 +8,6 @@ import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import ChipInput from "material-ui-chip-input";
-import Button from "@material-ui/core/Button";
-import { useMutation } from "@apollo/react-hooks";
-import gql from "graphql-tag";
-
-const interestMutation = gql`
-  mutation replaceInterests($PersonInput: String!, $TopicsInput: [String]) {
-    ReplaceInterests(personName: $PersonInput, topicNames: $TopicsInput) {
-      name
-      interests {
-        name
-      }
-    }
-  }
-`;
-
-const UpdateButton = ({ values, currentUser, updateTopics }) => {
-  const [runQuery, { data }] = useMutation(interestMutation);
-
-  const handleClick = () => {
-    updateTopics(values);
-    runQuery({
-      variables: {
-        PersonInput: currentUser,
-        TopicsInput: values
-      },
-      refetchQueries: ["topic_query"]
-    });
-  };
-
-  return (
-    <Button variant="contained" onClick={handleClick}>
-      Update your interests
-    </Button>
-  );
-};
 
 function renderInput(inputProps) {
   const { value, onChange, chips, ref, ...other } = inputProps;
@@ -125,7 +90,7 @@ const styles = theme => ({
 
 class TopicsInput extends React.Component {
   state = {
-    value: this.props.personTopics,
+    value: this.props.persontopics,
     suggestions: "",
     textFieldInput: ""
   };
@@ -171,6 +136,7 @@ class TopicsInput extends React.Component {
 
   handleAddChip(chip) {
     if (this.props.allowDuplicates || this.state.value.indexOf(chip) < 0) {
+      this.props.updatetopics([...this.state.value, chip]);
       this.setState(({ value }) => ({
         value: [...value, chip],
         textFieldInput: ""
@@ -179,12 +145,11 @@ class TopicsInput extends React.Component {
   }
 
   handleDeleteChip(chip, index) {
-    this.setState(({ value }) => {
-      const temp = value.slice();
-      temp.splice(index, 1);
-      return {
-        value: temp
-      };
+    const temp = this.state.value.slice();
+    temp.splice(index, 1);
+    this.props.updatetopics(temp);
+    this.setState({
+      value: temp
     });
   }
 
@@ -225,11 +190,6 @@ class TopicsInput extends React.Component {
             ...other
           }}
         />
-        <UpdateButton
-          values={this.state.value}
-          currentUser={this.props.currentUser}
-          updateTopics={this.props.updateTopics}
-        />
       </React.Fragment>
     );
   }
@@ -239,9 +199,8 @@ TopicsInput.propTypes = {
   allowDuplicates: PropTypes.bool,
   classes: PropTypes.object.isRequired,
   topics: PropTypes.array,
-  personTopics: PropTypes.array,
-  currentUser: PropTypes.string,
-  updateTopics: PropTypes.func
+  persontopics: PropTypes.array,
+  updatetopics: PropTypes.func
 };
 
 export default withStyles(styles)(TopicsInput);
